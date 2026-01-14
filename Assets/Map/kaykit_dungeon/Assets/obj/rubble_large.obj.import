@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://we3nhiqtjx7f"
+path="res://.godot/imported/rubble_large.obj-f180ef45881e60ab28591b4a2b87fac2.mesh"
+
+[deps]
+
+files=["res://.godot/imported/rubble_large.obj-f180ef45881e60ab28591b4a2b87fac2.mesh"]
+
+source_file="res://Assets/Map/kaykit_dungeon/Assets/obj/rubble_large.obj"
+dest_files=["res://.godot/imported/rubble_large.obj-f180ef45881e60ab28591b4a2b87fac2.mesh", "res://.godot/imported/rubble_large.obj-f180ef45881e60ab28591b4a2b87fac2.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false
