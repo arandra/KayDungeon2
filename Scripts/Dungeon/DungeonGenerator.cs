@@ -124,7 +124,7 @@ public partial class DungeonGenerator : Node3D
 	private List<Rect2I> _lastRooms = new();
 	private HashSet<int> _lastSpecialRooms = new();
 	private HashSet<int> _lastWoodRooms = new();
-	private readonly List<string> _cornerSkips = new();
+	private readonly List<string> _cornerEvents = new();
 
 	public override void _Ready()
 	{
@@ -474,7 +474,7 @@ public partial class DungeonGenerator : Node3D
 	{
 		var walls = new Dictionary<Vector2I, Vector2I>();
 		var occupied = new bool[GridSize.X, GridSize.Y];
-		_cornerSkips.Clear();
+		_cornerEvents.Clear();
 		for (var x = 0; x < GridSize.X; x++)
 		{
 			for (var z = 0; z < GridSize.Y; z++)
@@ -502,10 +502,7 @@ public partial class DungeonGenerator : Node3D
 		{
 			if (occupied[entry.Key.X, entry.Key.Y])
 			{
-				if (DebugDumpEnabled && DebugDumpWallCornerCsv)
-				{
-					RecordCornerSkip(entry.Key, entry.Value, grid, "occupied");
-				}
+				RecordCornerEvent(entry.Key, entry.Value, grid, "skipped_occupied");
 				continue;
 			}
 			PlaceWallTile(entry.Key, entry.Value, grid);
@@ -558,19 +555,19 @@ public partial class DungeonGenerator : Node3D
 			File.WriteAllText(Path.Combine(debugPath, "dungeon_rooms.csv"), roomsBuilder.ToString(), Encoding.UTF8);
 		}
 
-		if (DebugDumpWallCornerCsv && _cornerSkips.Count > 0)
+		if (DebugDumpWallCornerCsv)
 		{
 			var cornersBuilder = new StringBuilder();
-			cornersBuilder.AppendLine("x,z,dir_x,dir_z,n1_x,n1_z,n2_x,n2_z,reason");
-			foreach (var row in _cornerSkips)
+			cornersBuilder.AppendLine("x,z,dir_x,dir_z,n1_x,n1_z,n2_x,n2_z,status");
+			foreach (var row in _cornerEvents)
 			{
 				cornersBuilder.AppendLine(row);
 			}
-			File.WriteAllText(Path.Combine(debugPath, "dungeon_wall_corner_skipped.csv"), cornersBuilder.ToString(), Encoding.UTF8);
+			File.WriteAllText(Path.Combine(debugPath, "dungeon_wall_corners.csv"), cornersBuilder.ToString(), Encoding.UTF8);
 		}
 	}
 
-	private void RecordCornerSkip(Vector2I pos, Vector2I facingDir, int[,] grid, string reason)
+	private void RecordCornerEvent(Vector2I pos, Vector2I facingDir, int[,] grid, string status)
 	{
 		var neighbors = FloorNeighbors(pos, grid);
 		if (neighbors.Count != 2 || !IsCornerPair(neighbors))
@@ -578,8 +575,8 @@ public partial class DungeonGenerator : Node3D
 			return;
 		}
 
-		_cornerSkips.Add(
-			$"{pos.X},{pos.Y},{facingDir.X},{facingDir.Y},{neighbors[0].X},{neighbors[0].Y},{neighbors[1].X},{neighbors[1].Y},{reason}"
+		_cornerEvents.Add(
+			$"{pos.X},{pos.Y},{facingDir.X},{facingDir.Y},{neighbors[0].X},{neighbors[0].Y},{neighbors[1].X},{neighbors[1].Y},{status}"
 		);
 	}
 
@@ -593,6 +590,7 @@ public partial class DungeonGenerator : Node3D
 
 		var tileId = _wallId;
 		var orientation = OrientationFromDir(facingDir);
+		var cornerCandidate = false;
 
 		if (floorNeighbors.Count == 4 && _wallCrossingId >= 0)
 		{
@@ -606,6 +604,7 @@ public partial class DungeonGenerator : Node3D
 		}
 		else if (floorNeighbors.Count == 2 && IsCornerPair(floorNeighbors))
 		{
+			cornerCandidate = true;
 			tileId = _wallCornerId >= 0 ? _wallCornerId : tileId;
 			orientation = OrientationForCorner(floorNeighbors);
 		}
@@ -631,6 +630,12 @@ public partial class DungeonGenerator : Node3D
 		if (tileId >= 0)
 		{
 			_gridMap.SetCellItem(new Vector3I(pos.X, 0, pos.Y), tileId, orientation);
+		}
+
+		if (cornerCandidate)
+		{
+			var status = tileId >= 0 ? "placed" : "skipped_no_tile";
+			RecordCornerEvent(pos, facingDir, grid, status);
 		}
 	}
 
@@ -761,6 +766,7 @@ public partial class DungeonGenerator : Node3D
 		}
 		return PickFrom(source);
 	}
+
 
 	private int PickLargeTile(bool useWood)
 	{
