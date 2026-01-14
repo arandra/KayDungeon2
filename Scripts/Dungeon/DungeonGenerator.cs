@@ -102,6 +102,7 @@ public partial class DungeonGenerator : Node3D
 	}
 
 	private GridMap _gridMap;
+	private GridMap _wallGridMap;
 	private readonly RandomNumberGenerator _rng = new();
 	private readonly List<int> _floorSmallIds = new();
 	private readonly List<int> _floorLargeIds = new();
@@ -134,6 +135,12 @@ public partial class DungeonGenerator : Node3D
 			GD.Print("DungeonGenerator: GridMap not found in _Ready.");
 			return;
 		}
+		_wallGridMap = GetNodeOrNull<GridMap>("WallGridMap");
+		if (_wallGridMap == null)
+		{
+			GD.Print("DungeonGenerator: WallGridMap not found in _Ready.");
+			return;
+		}
 
 		if (RandomSeed)
 		{
@@ -146,16 +153,19 @@ public partial class DungeonGenerator : Node3D
 
 		_gridMap.CellSize = CellSize;
 		_gridMap.MeshLibrary = BuildMeshLibrary();
+		_wallGridMap.CellSize = CellSize;
+		_wallGridMap.MeshLibrary = _gridMap.MeshLibrary;
+		_wallGridMap.Position = new Vector3(CellSize.X * 0.5f, 0.0f, CellSize.Z * 0.5f);
 
-			if (RegenerateOnReady && !Engine.IsEditorHint())
-			{
-				Generate();
-			}
-		}
-
-		public override void _Process(double delta)
+		if (RegenerateOnReady && !Engine.IsEditorHint())
 		{
-			if (!Engine.IsEditorHint())
+			Generate();
+		}
+	}
+
+	public override void _Process(double delta)
+	{
+		if (!Engine.IsEditorHint())
 		{
 			return;
 		}
@@ -185,6 +195,7 @@ public partial class DungeonGenerator : Node3D
 		}
 
 		_gridMap.Clear();
+		_wallGridMap?.Clear();
 
 		var grid = MakeGrid(GridSize);
 		var rooms = CarveRooms(grid);
@@ -223,15 +234,28 @@ public partial class DungeonGenerator : Node3D
 			GD.Print("DungeonGenerator: GridMap missing. Cannot generate.");
 			return;
 		}
+		if (_wallGridMap == null)
+		{
+			_wallGridMap = GetNodeOrNull<GridMap>("WallGridMap");
+		}
+		if (_wallGridMap == null)
+		{
+			GD.Print("DungeonGenerator: WallGridMap missing. Cannot generate.");
+			return;
+		}
 
 		_gridMap.CellSize = CellSize;
 		_gridMap.MeshLibrary = BuildMeshLibrary();
+		_wallGridMap.CellSize = CellSize;
+		_wallGridMap.MeshLibrary = _gridMap.MeshLibrary;
+		_wallGridMap.Position = new Vector3(CellSize.X * 0.5f, 0.0f, CellSize.Z * 0.5f);
 		Generate();
 	}
 
 	private void EditorClearInternal()
 	{
 		_gridMap?.Clear();
+		_wallGridMap?.Clear();
 	}
 
 	private int[,] MakeGrid(Vector2I size)
@@ -472,8 +496,7 @@ public partial class DungeonGenerator : Node3D
 
 	private void PlaceWalls(int[,] grid)
 	{
-		var walls = new Dictionary<Vector2I, Vector2I>();
-		var occupied = new bool[GridSize.X, GridSize.Y];
+		var occupied = new HashSet<Vector3I>();
 		_cornerEvents.Clear();
 		for (var x = 0; x < GridSize.X; x++)
 		{
@@ -484,29 +507,34 @@ public partial class DungeonGenerator : Node3D
 					continue;
 				}
 
+				var floorPos = new Vector2I(x, z);
 				foreach (var dir in CardinalDirs())
 				{
-					var neighbor = new Vector2I(x, z) + dir;
-					if (!InBounds(neighbor) || grid[neighbor.X, neighbor.Y] == (int)CellType.Empty)
+					var neighbor = floorPos + dir;
+					if (InBounds(neighbor) && grid[neighbor.X, neighbor.Y] != (int)CellType.Empty)
 					{
-						if (!walls.ContainsKey(neighbor))
-						{
-							walls[neighbor] = dir;
-						}
+						continue;
+					}
+
+					var wallCell = WallCellFromEdge(floorPos, dir);
+					if (!occupied.Add(wallCell))
+					{
+						continue;
+					}
+
+					var tileId = PickWallStraightAsset(grid, floorPos, _wallId);
+					if (_rng.Randf() < WallVariantChance)
+					{
+						tileId = PickFrom(_wallVariantIds, tileId);
+					}
+
+					if (tileId >= 0)
+					{
+						var orientation = OrientationFromDir(dir);
+						_wallGridMap.SetCellItem(wallCell, tileId, orientation);
 					}
 				}
 			}
-		}
-
-		foreach (var entry in walls)
-		{
-			if (occupied[entry.Key.X, entry.Key.Y])
-			{
-				RecordCornerEvent(entry.Key, entry.Value, grid, "skipped_occupied");
-				continue;
-			}
-			PlaceWallTile(entry.Key, entry.Value, grid);
-			occupied[entry.Key.X, entry.Key.Y] = true;
 		}
 	}
 		private void PlaceWallDecor(int[,] grid, List<Rect2I> rooms)
@@ -629,7 +657,7 @@ public partial class DungeonGenerator : Node3D
 
 		if (tileId >= 0)
 		{
-			_gridMap.SetCellItem(new Vector3I(pos.X, 0, pos.Y), tileId, orientation);
+			_wallGridMap.SetCellItem(new Vector3I(pos.X, 0, pos.Y), tileId, orientation);
 		}
 
 		if (cornerCandidate)
@@ -795,6 +823,20 @@ public partial class DungeonGenerator : Node3D
 			return PickFrom(_wallArchedIds, fallback);
 		}
 		return fallback;
+	}
+
+	private Vector3I WallCellFromEdge(Vector2I floorCell, Vector2I dir)
+	{
+		var floorCenterLocal = _gridMap.MapToLocal(new Vector3I(floorCell.X, 0, floorCell.Y));
+		var edgeOffset = new Vector3(
+			dir.X * CellSize.X * 0.5f,
+			0.0f,
+			dir.Y * CellSize.Z * 0.5f
+		);
+		var edgeLocal = floorCenterLocal + edgeOffset;
+		var edgeGlobal = _gridMap.ToGlobal(edgeLocal);
+		var wallLocal = _wallGridMap.ToLocal(edgeGlobal);
+		return _wallGridMap.LocalToMap(wallLocal);
 	}
 
 	private bool CanPlaceBlock(int[,] grid, bool[,] occupied, Vector2I start, int size)
