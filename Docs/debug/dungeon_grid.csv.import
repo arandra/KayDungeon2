@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bfo68vdjygpjh"
+
+[deps]
+
+files=["res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation"]
+
+source_file="res://Docs/debug/dungeon_grid.csv"
+dest_files=["res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation", "res://Docs/debug/dungeon_grid.0.translation"]
+
+[params]
+
+compress=true
+delimiter=0

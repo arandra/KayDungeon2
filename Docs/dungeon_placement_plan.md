@@ -83,6 +83,7 @@ GridMap 기반 절차 생성 파이프라인에 그대로 반영할 수 있도�
 - **횃불**: `torch_mounted`, `torch_lit`
   - 복도마다 6~10타일 간격
 - **무기 장식**: `sword_shield*` (무기고)
+- **옵션 토글**: 에디터에서 `EnableWallDecor`가 false면 전혀 배치하지 않음
 
 ---
 
@@ -108,6 +109,7 @@ GridMap 기반 절차 생성 파이프라인에 그대로 반영할 수 있도�
 
 ### 폐허/전투 흔적
 - `rubble_*`, `wall_broken`, `wall_cracked`
+- **옵션 토글**: 에디터에서 `EnableProps`가 false면 전혀 배치하지 않음
 
 ---
 

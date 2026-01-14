@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dgpx7we8ox0m6"
+
+[deps]
+
+files=["res://Docs/debug/dungeon_rooms.x.translation", "res://Docs/debug/dungeon_rooms.y.translation", "res://Docs/debug/dungeon_rooms.w.translation", "res://Docs/debug/dungeon_rooms.h.translation", "res://Docs/debug/dungeon_rooms.is.translation", "res://Docs/debug/dungeon_rooms.is.translation"]
+
+source_file="res://Docs/debug/dungeon_rooms.csv"
+dest_files=["res://Docs/debug/dungeon_rooms.x.translation", "res://Docs/debug/dungeon_rooms.y.translation", "res://Docs/debug/dungeon_rooms.w.translation", "res://Docs/debug/dungeon_rooms.h.translation", "res://Docs/debug/dungeon_rooms.is.translation", "res://Docs/debug/dungeon_rooms.is.translation"]
+
+[params]
+
+compress=true
+delimiter=0
