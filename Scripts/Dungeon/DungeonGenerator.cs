@@ -22,24 +22,17 @@ public partial class DungeonGenerator : Node3D
 	[Export] public string[] FloorSmallAssets = Array.Empty<string>();
 	[Export] public string[] FloorLargeAssets =
 	{
-		"floor_tile_large.gltf",
-		"floor_dirt_large.gltf"
+		"floor_tile_large.gltf"
 	};
 	[Export] public string[] FloorExtralargeAssets =
 	{
 		"floor_tile_extralarge_grates.gltf"
 	};
 	[Export] public string[] FloorWoodSmallAssets = Array.Empty<string>();
-	[Export] public string[] FloorWoodLargeAssets =
-	{
-		"floor_wood_large.gltf",
-		"floor_wood_large_dark.gltf"
-	};
 	[Export] public string[] FloorSmallVariantAssets = Array.Empty<string>();
 	[Export] public string[] FloorLargeVariantAssets =
 	{
-		"floor_tile_large_rocks.gltf",
-		"floor_dirt_large_rocky.gltf"
+		"floor_tile_large_rocks.gltf"
 	};
 	[Export] public string[] FloorTrapAssets =
 	{
@@ -109,7 +102,6 @@ public partial class DungeonGenerator : Node3D
 	private readonly List<int> _floorLargeIds = new();
 	private readonly List<int> _floorExtralargeIds = new();
 	private readonly List<int> _floorWoodSmallIds = new();
-	private readonly List<int> _floorWoodLargeIds = new();
 	private readonly List<int> _floorSmallVariantIds = new();
 	private readonly List<int> _floorLargeVariantIds = new();
 	private readonly List<int> _floorTrapIds = new();
@@ -209,7 +201,7 @@ public partial class DungeonGenerator : Node3D
 		_lastWoodRooms = woodRooms;
 		MarkSpecialRooms(grid, rooms, specialRooms);
 		ConnectRooms(grid, rooms);
-		PlaceFloors(grid, rooms, specialRooms, woodRooms);
+		PlaceFloors(grid, rooms, specialRooms);
 		PlaceWalls(grid);
 		if (DebugDumpEnabled && DebugDumpOnGenerate)
 		{
@@ -423,7 +415,7 @@ public partial class DungeonGenerator : Node3D
 		}
 	}
 
-	private void PlaceFloors(int[,] grid, List<Rect2I> rooms, HashSet<int> specials, HashSet<int> woodRooms)
+	private void PlaceFloors(int[,] grid, List<Rect2I> rooms, HashSet<int> specials)
 	{
 		var occupied = new bool[GridSize.X, GridSize.Y];
 		var specialSize = 2;
@@ -452,7 +444,6 @@ public partial class DungeonGenerator : Node3D
 		for (var r = 0; r < rooms.Count; r++)
 		{
 			var room = rooms[r];
-			var useWood = woodRooms.Contains(r);
 			for (var x = room.Position.X; x < room.Position.X + room.Size.X; x += largeSize)
 			{
 				for (var z = room.Position.Y; z < room.Position.Y + room.Size.Y; z += largeSize)
@@ -462,7 +453,7 @@ public partial class DungeonGenerator : Node3D
 					{
 						continue;
 					}
-					var tileId = PickLargeTile(useWood);
+					var tileId = PickLargeTile();
 					if (_rng.Randf() < LargeVariantChance)
 					{
 						tileId = PickFrom(_floorLargeVariantIds, tileId);
@@ -481,7 +472,7 @@ public partial class DungeonGenerator : Node3D
 					continue;
 				}
 
-				var tileId = PickLargeTile(false);
+				var tileId = PickLargeTile();
 				if (_rng.Randf() < LargeVariantChance)
 				{
 					tileId = PickFrom(_floorLargeVariantIds, tileId);
@@ -843,14 +834,9 @@ public partial class DungeonGenerator : Node3D
 	}
 
 
-	private int PickLargeTile(bool useWood)
+	private int PickLargeTile()
 	{
-		var source = useWood ? _floorWoodLargeIds : _floorLargeIds;
-		if (source.Count == 0)
-		{
-			source = _floorLargeIds;
-		}
-		return PickFrom(source);
+		return PickFrom(_floorLargeIds);
 	}
 
 	private int PickWallStraightAsset(int[,] grid, Vector2I adjacentFloor, int fallback)
@@ -961,7 +947,6 @@ public partial class DungeonGenerator : Node3D
 		_floorLargeIds.Clear();
 		_floorExtralargeIds.Clear();
 		_floorWoodSmallIds.Clear();
-		_floorWoodLargeIds.Clear();
 		_floorSmallVariantIds.Clear();
 		_floorLargeVariantIds.Clear();
 		_floorTrapIds.Clear();
@@ -978,8 +963,8 @@ public partial class DungeonGenerator : Node3D
 		AddTileItems(library, FloorSmallAssets, _floorSmallIds);
 		AddTileItems(library, FloorLargeAssets, _floorLargeIds);
 		AddTileItems(library, FloorExtralargeAssets, _floorExtralargeIds);
+		OffsetExtralargeItems(library);
 		AddTileItems(library, FloorWoodSmallAssets, _floorWoodSmallIds);
-		AddTileItems(library, FloorWoodLargeAssets, _floorWoodLargeIds);
 		AddTileItems(library, FloorSmallVariantAssets, _floorSmallVariantIds);
 		AddTileItems(library, FloorLargeVariantAssets, _floorLargeVariantIds);
 		AddTileItems(library, FloorTrapAssets, _floorTrapIds);
@@ -1022,6 +1007,21 @@ public partial class DungeonGenerator : Node3D
 			{
 				output.Add(id);
 			}
+		}
+	}
+
+	private void OffsetExtralargeItems(MeshLibrary library)
+	{
+		if (_floorExtralargeIds.Count == 0)
+		{
+			return;
+		}
+
+		var offset = new Vector3(CellSize.X * 0.5f, 0.0f, CellSize.Z * 0.5f);
+		var transform = new Transform3D(Basis.Identity, offset);
+		foreach (var id in _floorExtralargeIds)
+		{
+			library.SetItemMeshTransform(id, transform);
 		}
 	}
 
