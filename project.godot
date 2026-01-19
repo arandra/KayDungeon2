@@ -18,6 +18,10 @@ config/icon="res://icon.svg"
 
 project/assembly_name="KayDungeon2"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/dungeon_editor/plugin.cfg")
+
 [rendering]
 
 renderer/rendering_method="mobile"

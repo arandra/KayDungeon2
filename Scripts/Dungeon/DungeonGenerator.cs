@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.Json;
 
 [Tool]
 public partial class DungeonGenerator : Node3D
@@ -18,6 +19,7 @@ public partial class DungeonGenerator : Node3D
 	[Export] public Vector2I MaxRoomSize = new(10, 10);
 	[Export] public Vector2I GridSize = new(48, 48);
 	[Export] public int CorridorWidth = 1;
+	[Export] public int FloorHeightCells = 1;
 
 	[Export] public string[] FloorSmallAssets = Array.Empty<string>();
 	[Export] public string[] FloorLargeAssets =
@@ -119,6 +121,10 @@ public partial class DungeonGenerator : Node3D
 	private HashSet<int> _lastSpecialRooms = new();
 	private HashSet<int> _lastWoodRooms = new();
 	private readonly List<string> _wallEvents = new();
+	private static readonly JsonSerializerOptions JsonOptions = new()
+	{
+		WriteIndented = true
+	};
 
 	public override void _Ready()
 	{
@@ -250,6 +256,168 @@ public partial class DungeonGenerator : Node3D
 	{
 		_gridMap?.Clear();
 		_wallGridMap?.Clear();
+	}
+
+	private int SafeFloorHeightCells()
+	{
+		return Mathf.Max(1, FloorHeightCells);
+	}
+
+	private int WallFloorHeightCells()
+	{
+		return SafeFloorHeightCells() * 2;
+	}
+
+	private void EnsureGridMapsReady()
+	{
+		_gridMap ??= GetNodeOrNull<GridMap>("GridMap");
+		_wallGridMap ??= GetNodeOrNull<GridMap>("WallGridMap");
+		if (_gridMap == null || _wallGridMap == null)
+		{
+			return;
+		}
+
+		_gridMap.CellSize = CellSize;
+		_gridMap.MeshLibrary = BuildMeshLibrary();
+		_wallGridMap.CellSize = CellSize * 0.5f;
+		_wallGridMap.MeshLibrary = _gridMap.MeshLibrary;
+		_wallGridMap.Position = WallGridOffset;
+	}
+
+	public DungeonLayout BuildLayoutFromGridMaps()
+	{
+		EnsureGridMapsReady();
+		if (_gridMap == null || _wallGridMap == null)
+		{
+			return new DungeonLayout();
+		}
+
+		var layout = new DungeonLayout
+		{
+			CellSizeX = CellSize.X,
+			CellSizeY = CellSize.Y,
+			CellSizeZ = CellSize.Z,
+			GridSizeX = GridSize.X,
+			GridSizeY = GridSize.Y,
+			FloorHeightCells = SafeFloorHeightCells()
+		};
+
+		var floors = new Dictionary<int, FloorLayout>();
+		var floorHeight = SafeFloorHeightCells();
+		var wallHeight = WallFloorHeightCells();
+
+		foreach (var cell in _gridMap.GetUsedCells())
+		{
+			var floorIndex = floorHeight > 0 ? cell.Y / floorHeight : 0;
+			if (!floors.TryGetValue(floorIndex, out var floor))
+			{
+				floor = new FloorLayout { FloorIndex = floorIndex };
+				floors[floorIndex] = floor;
+			}
+
+			floor.FloorCells.Add(new CellData
+			{
+				X = cell.X,
+				Y = cell.Y - floorIndex * floorHeight,
+				Z = cell.Z,
+				TileId = _gridMap.GetCellItem(cell),
+				Orientation = _gridMap.GetCellItemOrientation(cell)
+			});
+		}
+
+		foreach (var cell in _wallGridMap.GetUsedCells())
+		{
+			var floorIndex = wallHeight > 0 ? cell.Y / wallHeight : 0;
+			if (!floors.TryGetValue(floorIndex, out var floor))
+			{
+				floor = new FloorLayout { FloorIndex = floorIndex };
+				floors[floorIndex] = floor;
+			}
+
+			floor.WallCells.Add(new CellData
+			{
+				X = cell.X,
+				Y = cell.Y - floorIndex * wallHeight,
+				Z = cell.Z,
+				TileId = _wallGridMap.GetCellItem(cell),
+				Orientation = _wallGridMap.GetCellItemOrientation(cell)
+			});
+		}
+
+		var indices = new List<int>(floors.Keys);
+		indices.Sort();
+		foreach (var index in indices)
+		{
+			layout.Floors.Add(floors[index]);
+		}
+
+		return layout;
+	}
+
+	public void ApplyLayout(DungeonLayout layout)
+	{
+		if (layout == null)
+		{
+			return;
+		}
+
+		CellSize = new Vector3(layout.CellSizeX, layout.CellSizeY, layout.CellSizeZ);
+		GridSize = new Vector2I(layout.GridSizeX, layout.GridSizeY);
+		FloorHeightCells = Mathf.Max(1, layout.FloorHeightCells);
+
+		EnsureGridMapsReady();
+		if (_gridMap == null || _wallGridMap == null)
+		{
+			return;
+		}
+
+		_gridMap.Clear();
+		_wallGridMap.Clear();
+
+		foreach (var floor in layout.Floors)
+		{
+			var floorOffset = floor.FloorIndex * SafeFloorHeightCells();
+			var wallOffset = floor.FloorIndex * WallFloorHeightCells();
+
+			foreach (var cell in floor.FloorCells)
+			{
+				var pos = new Vector3I(cell.X, cell.Y + floorOffset, cell.Z);
+				_gridMap.SetCellItem(pos, cell.TileId, cell.Orientation);
+			}
+
+			foreach (var cell in floor.WallCells)
+			{
+				var pos = new Vector3I(cell.X, cell.Y + wallOffset, cell.Z);
+				_wallGridMap.SetCellItem(pos, cell.TileId, cell.Orientation);
+			}
+		}
+	}
+
+	public void ExportLayoutToJson(string path)
+	{
+		var layout = BuildLayoutFromGridMaps();
+		var json = JsonSerializer.Serialize(layout, JsonOptions);
+		var diskPath = ProjectSettings.GlobalizePath(path);
+		File.WriteAllText(diskPath, json, Encoding.UTF8);
+	}
+
+	public bool ImportLayoutFromJson(string path)
+	{
+		var diskPath = ProjectSettings.GlobalizePath(path);
+		if (!File.Exists(diskPath))
+		{
+			return false;
+		}
+
+		var json = File.ReadAllText(diskPath, Encoding.UTF8);
+		var layout = JsonSerializer.Deserialize<DungeonLayout>(json, JsonOptions);
+		if (layout == null)
+		{
+			return false;
+		}
+
+		ApplyLayout(layout);
+		return true;
 	}
 
 	private int[,] MakeGrid(Vector2I size)

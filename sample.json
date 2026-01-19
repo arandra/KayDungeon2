@@ -1,0 +1,1516 @@
+﻿{
+  "Version": 1,
+  "CellSizeX": 4,
+  "CellSizeY": 4,
+  "CellSizeZ": 4,
+  "GridSizeX": 30,
+  "GridSizeY": 30,
+  "FloorHeightCells": 1,
+  "Floors": [
+    {
+      "FloorIndex": 0,
+      "FloorCells": [
+        {
+          "X": 12,
+          "Y": 0,
+          "Z": 7,
+          "TileId": 1,
+          "Orientation": 0
+        },
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 12,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 13,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 14,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 15,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 16,
+          "TileId": 2,
+          "Orientation": 0
+        },
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 17,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 18,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 19,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 20,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 21,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 22,
+          "Y": 0,
+          "Z": 12,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 22,
+          "Y": 0,
+          "Z": 13,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 22,
+          "Y": 0,
+          "Z": 14,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 22,
+          "Y": 0,
+          "Z": 15,
+          "TileId": 2,
+          "Orientation": 0
+        },
+        {
+          "X": 22,
+          "Y": 0,
+          "Z": 16,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 22,
+          "Y": 0,
+          "Z": 17,
+          "TileId": 2,
+          "Orientation": 0
+        },
+        {
+          "X": 22,
+          "Y": 0,
+          "Z": 18,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 22,
+          "Y": 0,
+          "Z": 19,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 22,
+          "Y": 0,
+          "Z": 20,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 22,
+          "Y": 0,
+          "Z": 21,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 23,
+          "Y": 0,
+          "Z": 12,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 23,
+          "Y": 0,
+          "Z": 13,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 23,
+          "Y": 0,
+          "Z": 14,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 23,
+          "Y": 0,
+          "Z": 15,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 23,
+          "Y": 0,
+          "Z": 16,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 23,
+          "Y": 0,
+          "Z": 17,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 23,
+          "Y": 0,
+          "Z": 18,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 23,
+          "Y": 0,
+          "Z": 19,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 23,
+          "Y": 0,
+          "Z": 20,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 23,
+          "Y": 0,
+          "Z": 21,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 24,
+          "Y": 0,
+          "Z": 12,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 24,
+          "Y": 0,
+          "Z": 13,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 24,
+          "Y": 0,
+          "Z": 14,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 24,
+          "Y": 0,
+          "Z": 15,
+          "TileId": 2,
+          "Orientation": 0
+        },
+        {
+          "X": 24,
+          "Y": 0,
+          "Z": 16,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 24,
+          "Y": 0,
+          "Z": 17,
+          "TileId": 2,
+          "Orientation": 0
+        },
+        {
+          "X": 24,
+          "Y": 0,
+          "Z": 18,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 24,
+          "Y": 0,
+          "Z": 19,
+          "TileId": 2,
+          "Orientation": 0
+        },
+        {
+          "X": 24,
+          "Y": 0,
+          "Z": 20,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 24,
+          "Y": 0,
+          "Z": 21,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 12,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 13,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 14,
+          "TileId": 2,
+          "Orientation": 0
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 15,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 16,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 17,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 18,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 19,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 20,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 21,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 26,
+          "Y": 0,
+          "Z": 12,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 26,
+          "Y": 0,
+          "Z": 13,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 26,
+          "Y": 0,
+          "Z": 14,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 26,
+          "Y": 0,
+          "Z": 15,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 26,
+          "Y": 0,
+          "Z": 16,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 26,
+          "Y": 0,
+          "Z": 17,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 26,
+          "Y": 0,
+          "Z": 18,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 26,
+          "Y": 0,
+          "Z": 19,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 26,
+          "Y": 0,
+          "Z": 20,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 26,
+          "Y": 0,
+          "Z": 21,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 13,
+          "Y": 0,
+          "Z": 18,
+          "TileId": 2,
+          "Orientation": 0
+        },
+        {
+          "X": 13,
+          "Y": 0,
+          "Z": 19,
+          "TileId": 2,
+          "Orientation": 0
+        },
+        {
+          "X": 13,
+          "Y": 0,
+          "Z": 20,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 13,
+          "Y": 0,
+          "Z": 21,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 14,
+          "Y": 0,
+          "Z": 18,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 14,
+          "Y": 0,
+          "Z": 19,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 14,
+          "Y": 0,
+          "Z": 20,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 14,
+          "Y": 0,
+          "Z": 21,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 15,
+          "Y": 0,
+          "Z": 18,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 15,
+          "Y": 0,
+          "Z": 19,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 15,
+          "Y": 0,
+          "Z": 20,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 15,
+          "Y": 0,
+          "Z": 21,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 16,
+          "Y": 0,
+          "Z": 18,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 16,
+          "Y": 0,
+          "Z": 19,
+          "TileId": 2,
+          "Orientation": 0
+        },
+        {
+          "X": 16,
+          "Y": 0,
+          "Z": 20,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 16,
+          "Y": 0,
+          "Z": 21,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 17,
+          "Y": 0,
+          "Z": 18,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 17,
+          "Y": 0,
+          "Z": 19,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 17,
+          "Y": 0,
+          "Z": 20,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 17,
+          "Y": 0,
+          "Z": 21,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 11,
+          "Y": 0,
+          "Z": 4,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 11,
+          "Y": 0,
+          "Z": 5,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 11,
+          "Y": 0,
+          "Z": 6,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 11,
+          "Y": 0,
+          "Z": 7,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 11,
+          "Y": 0,
+          "Z": 8,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 11,
+          "Y": 0,
+          "Z": 9,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 11,
+          "Y": 0,
+          "Z": 10,
+          "TileId": 0,
+          "Orientation": 16
+        },
+        {
+          "X": 11,
+          "Y": 0,
+          "Z": 11,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 11,
+          "Y": 0,
+          "Z": 12,
+          "TileId": 2,
+          "Orientation": 0
+        },
+        {
+          "X": 12,
+          "Y": 0,
+          "Z": 4,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 12,
+          "Y": 0,
+          "Z": 5,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 12,
+          "Y": 0,
+          "Z": 6,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 12,
+          "Y": 0,
+          "Z": 9,
+          "TileId": 0,
+          "Orientation": 16
+        },
+        {
+          "X": 12,
+          "Y": 0,
+          "Z": 10,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 12,
+          "Y": 0,
+          "Z": 11,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 12,
+          "Y": 0,
+          "Z": 12,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 13,
+          "Y": 0,
+          "Z": 4,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 13,
+          "Y": 0,
+          "Z": 5,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 13,
+          "Y": 0,
+          "Z": 6,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 13,
+          "Y": 0,
+          "Z": 9,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 13,
+          "Y": 0,
+          "Z": 10,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 13,
+          "Y": 0,
+          "Z": 11,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 13,
+          "Y": 0,
+          "Z": 12,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 14,
+          "Y": 0,
+          "Z": 4,
+          "TileId": 0,
+          "Orientation": 16
+        },
+        {
+          "X": 14,
+          "Y": 0,
+          "Z": 5,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 14,
+          "Y": 0,
+          "Z": 6,
+          "TileId": 0,
+          "Orientation": 16
+        },
+        {
+          "X": 14,
+          "Y": 0,
+          "Z": 7,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 14,
+          "Y": 0,
+          "Z": 8,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 14,
+          "Y": 0,
+          "Z": 9,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 14,
+          "Y": 0,
+          "Z": 10,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 14,
+          "Y": 0,
+          "Z": 11,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 14,
+          "Y": 0,
+          "Z": 12,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 13,
+          "Y": 0,
+          "Z": 13,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 13,
+          "Y": 0,
+          "Z": 14,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 13,
+          "Y": 0,
+          "Z": 15,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 13,
+          "Y": 0,
+          "Z": 16,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 13,
+          "Y": 0,
+          "Z": 17,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 15,
+          "Y": 0,
+          "Z": 17,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 16,
+          "Y": 0,
+          "Z": 17,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 17,
+          "Y": 0,
+          "Z": 17,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 18,
+          "Y": 0,
+          "Z": 17,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 19,
+          "Y": 0,
+          "Z": 17,
+          "TileId": 0,
+          "Orientation": 0
+        },
+        {
+          "X": 20,
+          "Y": 0,
+          "Z": 17,
+          "TileId": 0,
+          "Orientation": 0
+        }
+      ],
+      "WallCells": [
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 8,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 22,
+          "Y": 0,
+          "Z": 7,
+          "TileId": 5,
+          "Orientation": 0
+        },
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 10,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 12,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 14,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 16,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 18,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 20,
+          "TileId": 10,
+          "Orientation": 16
+        },
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 22,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 21,
+          "Y": 0,
+          "Z": 24,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 22,
+          "Y": 0,
+          "Z": 25,
+          "TileId": 5,
+          "Orientation": 10
+        },
+        {
+          "X": 24,
+          "Y": 0,
+          "Z": 7,
+          "TileId": 5,
+          "Orientation": 0
+        },
+        {
+          "X": 24,
+          "Y": 0,
+          "Z": 25,
+          "TileId": 5,
+          "Orientation": 10
+        },
+        {
+          "X": 26,
+          "Y": 0,
+          "Z": 7,
+          "TileId": 5,
+          "Orientation": 0
+        },
+        {
+          "X": 27,
+          "Y": 0,
+          "Z": 26,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 26,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 27,
+          "Y": 0,
+          "Z": 28,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 28,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 27,
+          "Y": 0,
+          "Z": 30,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 30,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 27,
+          "Y": 0,
+          "Z": 32,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 32,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 27,
+          "Y": 0,
+          "Z": 34,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 34,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 36,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 38,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 40,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 25,
+          "Y": 0,
+          "Z": 42,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 26,
+          "Y": 0,
+          "Z": 43,
+          "TileId": 13,
+          "Orientation": 10
+        },
+        {
+          "X": 29,
+          "Y": 0,
+          "Z": 8,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 28,
+          "Y": 0,
+          "Z": 7,
+          "TileId": 5,
+          "Orientation": 0
+        },
+        {
+          "X": 29,
+          "Y": 0,
+          "Z": 10,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 29,
+          "Y": 0,
+          "Z": 12,
+          "TileId": 10,
+          "Orientation": 16
+        },
+        {
+          "X": 29,
+          "Y": 0,
+          "Z": 14,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 29,
+          "Y": 0,
+          "Z": 16,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 29,
+          "Y": 0,
+          "Z": 18,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 29,
+          "Y": 0,
+          "Z": 20,
+          "TileId": 10,
+          "Orientation": 16
+        },
+        {
+          "X": 29,
+          "Y": 0,
+          "Z": 22,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 29,
+          "Y": 0,
+          "Z": 24,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 28,
+          "Y": 0,
+          "Z": 25,
+          "TileId": 5,
+          "Orientation": 10
+        },
+        {
+          "X": 28,
+          "Y": 0,
+          "Z": 35,
+          "TileId": 5,
+          "Orientation": 0
+        },
+        {
+          "X": 28,
+          "Y": 0,
+          "Z": 43,
+          "TileId": 12,
+          "Orientation": 10
+        },
+        {
+          "X": 29,
+          "Y": 0,
+          "Z": 34,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 30,
+          "Y": 0,
+          "Z": 33,
+          "TileId": 5,
+          "Orientation": 0
+        },
+        {
+          "X": 30,
+          "Y": 0,
+          "Z": 43,
+          "TileId": 5,
+          "Orientation": 10
+        },
+        {
+          "X": 32,
+          "Y": 0,
+          "Z": 33,
+          "TileId": 5,
+          "Orientation": 0
+        },
+        {
+          "X": 32,
+          "Y": 0,
+          "Z": 43,
+          "TileId": 5,
+          "Orientation": 10
+        },
+        {
+          "X": 34,
+          "Y": 0,
+          "Z": 33,
+          "TileId": 5,
+          "Orientation": 0
+        },
+        {
+          "X": 35,
+          "Y": 0,
+          "Z": 36,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 35,
+          "Y": 0,
+          "Z": 38,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 35,
+          "Y": 0,
+          "Z": 40,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 35,
+          "Y": 0,
+          "Z": 42,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 34,
+          "Y": 0,
+          "Z": 43,
+          "TileId": 10,
+          "Orientation": 10
+        },
+        {
+          "X": 36,
+          "Y": 0,
+          "Z": 35,
+          "TileId": 5,
+          "Orientation": 10
+        },
+        {
+          "X": 36,
+          "Y": 0,
+          "Z": 33,
+          "TileId": 5,
+          "Orientation": 0
+        },
+        {
+          "X": 38,
+          "Y": 0,
+          "Z": 35,
+          "TileId": 5,
+          "Orientation": 10
+        },
+        {
+          "X": 38,
+          "Y": 0,
+          "Z": 33,
+          "TileId": 5,
+          "Orientation": 0
+        },
+        {
+          "X": 40,
+          "Y": 0,
+          "Z": 35,
+          "TileId": 5,
+          "Orientation": 10
+        },
+        {
+          "X": 40,
+          "Y": 0,
+          "Z": 33,
+          "TileId": 5,
+          "Orientation": 0
+        },
+        {
+          "X": 41,
+          "Y": 0,
+          "Z": 24,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 42,
+          "Y": 0,
+          "Z": 23,
+          "TileId": 5,
+          "Orientation": 0
+        },
+        {
+          "X": 41,
+          "Y": 0,
+          "Z": 26,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 41,
+          "Y": 0,
+          "Z": 28,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 41,
+          "Y": 0,
+          "Z": 30,
+          "TileId": 10,
+          "Orientation": 22
+        },
+        {
+          "X": 41,
+          "Y": 0,
+          "Z": 32,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 41,
+          "Y": 0,
+          "Z": 36,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 41,
+          "Y": 0,
+          "Z": 38,
+          "TileId": 12,
+          "Orientation": 22
+        },
+        {
+          "X": 41,
+          "Y": 0,
+          "Z": 40,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 41,
+          "Y": 0,
+          "Z": 42,
+          "TileId": 5,
+          "Orientation": 22
+        },
+        {
+          "X": 42,
+          "Y": 0,
+          "Z": 43,
+          "TileId": 5,
+          "Orientation": 10
+        },
+        {
+          "X": 44,
+          "Y": 0,
+          "Z": 23,
+          "TileId": 5,
+          "Orientation": 0
+        },
+        {
+          "X": 44,
+          "Y": 0,
+          "Z": 43,
+          "TileId": 5,
+          "Orientation": 10
+        },
+        {
+          "X": 46,
+          "Y": 0,
+          "Z": 23,
+          "TileId": 5,
+          "Orientation": 0
+        },
+        {
+          "X": 46,
+          "Y": 0,
+          "Z": 43,
+          "TileId": 11,
+          "Orientation": 10
+        },
+        {
+          "X": 48,
+          "Y": 0,
+          "Z": 23,
+          "TileId": 12,
+          "Orientation": 0
+        },
+        {
+          "X": 48,
+          "Y": 0,
+          "Z": 43,
+          "TileId": 5,
+          "Orientation": 10
+        },
+        {
+          "X": 50,
+          "Y": 0,
+          "Z": 23,
+          "TileId": 5,
+          "Orientation": 0
+        },
+        {
+          "X": 50,
+          "Y": 0,
+          "Z": 43,
+          "TileId": 5,
+          "Orientation": 10
+        },
+        {
+          "X": 53,
+          "Y": 0,
+          "Z": 24,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 52,
+          "Y": 0,
+          "Z": 23,
+          "TileId": 5,
+          "Orientation": 0
+        },
+        {
+          "X": 53,
+          "Y": 0,
+          "Z": 26,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 53,
+          "Y": 0,
+          "Z": 28,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 53,
+          "Y": 0,
+          "Z": 30,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 53,
+          "Y": 0,
+          "Z": 32,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 53,
+          "Y": 0,
+          "Z": 34,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 53,
+          "Y": 0,
+          "Z": 36,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 53,
+          "Y": 0,
+          "Z": 38,
+          "TileId": 12,
+          "Orientation": 16
+        },
+        {
+          "X": 53,
+          "Y": 0,
+          "Z": 40,
+          "TileId": 5,
+          "Orientation": 16
+        },
+        {
+          "X": 53,
+          "Y": 0,
+          "Z": 42,
+          "TileId": 12,
+          "Orientation": 16
+        },
+        {
+          "X": 52,
+          "Y": 0,
+          "Z": 43,
+          "TileId": 5,
+          "Orientation": 10
+        }
+      ]
+    }
+  ]
+}
