@@ -1,7 +1,8 @@
-[gd_scene load_steps=52 format=4 uid="uid://woxkvryrki4m"]
+[gd_scene load_steps=53 format=4 uid="uid://woxkvryrki4m"]
 
 [ext_resource type="Script" uid="uid://bw2ra0m0ah302" path="res://Scripts/Dungeon/DungeonGenerator.cs" id="1"]
 [ext_resource type="Texture2D" uid="uid://ddfa7l3775xv3" path="res://Assets/Map/kaykit_dungeon/Assets/gltf/dungeon_texture.png" id="2_e4bi4"]
+[ext_resource type="PackedScene" uid="uid://b1jrua55p4o4s" path="res://Assets/Character/Barbarian.tscn" id="3_v0fvh"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_atbcf"]
 resource_name = "texture"
@@ -601,7 +602,7 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_6ijb1")
 
-[sub_resource type="MeshLibrary" id="MeshLibrary_e4bi4"]
+[sub_resource type="MeshLibrary" id="MeshLibrary_if30b"]
 item/0/name = "floor_tile_large"
 item/0/mesh = SubResource("ArrayMesh_3f564")
 item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -724,7 +725,7 @@ EnableWallDecor = true
 DebugDumpEnabled = true
 
 [node name="GridMap" type="GridMap" parent="."]
-mesh_library = SubResource("MeshLibrary_e4bi4")
+mesh_library = SubResource("MeshLibrary_if30b")
 cell_size = Vector3(4, 4, 4)
 cell_center_x = false
 cell_center_y = false
@@ -735,11 +736,15 @@ data = {
 metadata/_editor_floor_ = Vector3(0, 1, 0)
 
 [node name="WallGridMap" type="GridMap" parent="."]
-mesh_library = SubResource("MeshLibrary_e4bi4")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1)
+mesh_library = SubResource("MeshLibrary_if30b")
 cell_center_x = false
 cell_center_y = false
 cell_center_z = false
 data = {
 "cells": PackedInt32Array(21, 8, 1441797, 22, 7, 5, 21, 10, 1441797, 21, 12, 1441797, 21, 14, 1441797, 21, 16, 1441797, 21, 18, 1441797, 21, 20, 1048586, 21, 22, 1441797, 21, 24, 1441797, 22, 25, 655365, 24, 7, 5, 24, 25, 655365, 26, 7, 5, 27, 26, 1048581, 25, 26, 1441797, 27, 28, 1048581, 25, 28, 1441797, 27, 30, 1048581, 25, 30, 1441797, 27, 32, 1048581, 25, 32, 1441797, 27, 34, 1048581, 25, 34, 1441797, 25, 36, 1441797, 25, 38, 1441797, 25, 40, 1441797, 25, 42, 1441797, 26, 43, 655373, 29, 8, 1048581, 28, 7, 5, 29, 10, 1048581, 29, 12, 1048586, 29, 14, 1048581, 29, 16, 1048581, 29, 18, 1048581, 29, 20, 1048586, 29, 22, 1048581, 29, 24, 1048581, 28, 25, 655365, 28, 35, 5, 28, 43, 655372, 29, 34, 1441797, 30, 33, 5, 30, 43, 655365, 32, 33, 5, 32, 43, 655365, 34, 33, 5, 35, 36, 1048581, 35, 38, 1048581, 35, 40, 1048581, 35, 42, 1048581, 34, 43, 655370, 36, 35, 655365, 36, 33, 5, 38, 35, 655365, 38, 33, 5, 40, 35, 655365, 40, 33, 5, 41, 24, 1441797, 42, 23, 5, 41, 26, 1441797, 41, 28, 1441797, 41, 30, 1441802, 41, 32, 1441797, 41, 36, 1441797, 41, 38, 1441804, 41, 40, 1441797, 41, 42, 1441797, 42, 43, 655365, 44, 23, 5, 44, 43, 655365, 46, 23, 5, 46, 43, 655371, 48, 23, 12, 48, 43, 655365, 50, 23, 5, 50, 43, 655365, 53, 24, 1048581, 52, 23, 5, 53, 26, 1048581, 53, 28, 1048581, 53, 30, 1048581, 53, 32, 1048581, 53, 34, 1048581, 53, 36, 1048581, 53, 38, 1048588, 53, 40, 1048581, 53, 42, 1048588, 52, 43, 655365)
 }
-metadata/_editor_floor_ = Vector3(0, 2, 0)
+metadata/_editor_floor_ = Vector3(0, 1, 0)
+
+[node name="Barbarian" parent="." instance=ExtResource("3_v0fvh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.968826, 0, 21.20321)

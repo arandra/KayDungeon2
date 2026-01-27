@@ -1,0 +1,26 @@
+{
+  "res://Assets/Character/Adventurers/Characters/gltf/Barbarian.glb": {
+    "left_bone": "hand.l",
+    "left_path": "Rig_Medium/Skeleton3D/LeftHandAttachment",
+    "right_bone": "hand.r",
+    "right_path": "Rig_Medium/Skeleton3D/RightHandAttachment"
+  },
+  "res://Assets/Character/Barbarian.tscn": {
+    "left_bone": "hand.l",
+    "left_path": "Rig_Medium/Skeleton3D/LeftHandAttachment",
+    "right_bone": "hand.r",
+    "right_path": "Rig_Medium/Skeleton3D/RightHandAttachment"
+  },
+  "res://Assets/Character/Knight.tscn": {
+    "left_bone": "",
+    "left_path": "Rig_Medium/Skeleton3D/handslot.l",
+    "right_bone": "",
+    "right_path": "Rig_Medium/Skeleton3D/handslot.r"
+  },
+  "res://Assets/Character/Ranger.tscn": {
+    "left_bone": "",
+    "left_path": "Rig_Medium/Skeleton3D/handslot.l/Grip",
+    "right_bone": "",
+    "right_path": "Rig_Medium/Skeleton3D/handslot.r/Grip"
+  }
+}

@@ -1,0 +1,52 @@
+[gd_scene load_steps=4 format=3 uid="uid://b1jrua55p4o4s"]
+
+[ext_resource type="PackedScene" uid="uid://cy3c1hyf3u8te" path="res://Assets/Character/Adventurers/Characters/gltf/Barbarian.glb" id="1_esyjr"]
+[ext_resource type="PackedScene" uid="uid://c0y5405ncvgdn" path="res://addons/kaykit_character_animator/CharacterAnimator.tscn" id="2_k116q"]
+[ext_resource type="Script" path="res://Scripts/Tile/UnitActor.cs" id="3_unit"]
+
+[node name="Barbarian" instance=ExtResource("1_esyjr")]
+script = ExtResource("3_unit")
+MovePoints = 4
+
+[node name="Skeleton3D" parent="Rig_Medium" index="0"]
+bones/1/position = Vector3(0, 0.36027333, 0)
+bones/2/rotation = Quaternion(1.1361504e-10, -8.467925e-09, 0.012834026, 0.9999177)
+bones/3/rotation = Quaternion(1.1274835e-10, 8.448129e-09, -0.012834021, 0.9999177)
+bones/4/position = Vector3(0.21200734, 0.13413227, 8.480239e-08)
+bones/4/rotation = Quaternion(-0.70306665, -0.1853637, -0.44855022, 0.5197504)
+bones/5/rotation = Quaternion(1.8196689e-08, -3.6752407e-08, -0.71068, 0.7035154)
+bones/6/rotation = Quaternion(2.6357031e-11, 6.232488e-10, 0.026658094, 0.99964464)
+bones/6/scale = Vector3(1.0000001, 1, 1)
+bones/7/rotation = Quaternion(-0.32632762, -0.41714177, -0.0063349996, 0.8482116)
+bones/8/rotation = Quaternion(1.6806099e-09, 1.680615e-09, -0.7071068, 0.7071067)
+bones/9/rotation = Quaternion(0, 2.283618e-20, 0, 1)
+bones/10/position = Vector3(-0.21200734, 0.13413227, 8.5732175e-08)
+bones/10/rotation = Quaternion(-0.72276175, 0.025402304, 0.36508152, 0.58624715)
+bones/11/rotation = Quaternion(5.4670327e-08, 4.831762e-08, 0.73612344, 0.67684734)
+bones/12/rotation = Quaternion(-3.002606e-08, -9.604189e-09, -0.026658088, 0.99964464)
+bones/12/scale = Vector3(1.0000001, 1.0000001, 1)
+bones/13/rotation = Quaternion(-0.41431814, 0.28395247, 0.0037973186, 0.8646948)
+bones/14/rotation = Quaternion(1.6805918e-09, -1.6805916e-09, 0.7071068, 0.7071067)
+bones/15/position = Vector3(0.17094506, 0.09417761, -0.005879502)
+bones/15/rotation = Quaternion(0.963268, -3.5315142e-07, -7.0089825e-08, 0.26854205)
+bones/16/rotation = Quaternion(0.9386382, 2.3812966e-08, -6.518511e-07, 0.3449034)
+bones/17/rotation = Quaternion(-0.66802794, 1.826919e-08, 4.511507e-07, 0.7441362)
+bones/18/rotation = Quaternion(3.0703667e-08, 0.92003226, -0.39184257, 5.5878374e-08)
+bones/19/position = Vector3(-0.17094506, 0.10299689, 0.0058795307)
+bones/19/rotation = Quaternion(0.99969727, 1.9125912e-07, -1.1533014e-08, 0.024605535)
+bones/20/rotation = Quaternion(0.44194794, -6.19342e-08, 3.069174e-07, 0.8970407)
+bones/21/rotation = Quaternion(-0.7285186, 2.3495632e-07, -1.3592395e-07, 0.6850261)
+bones/22/rotation = Quaternion(2.371216e-08, 0.9200219, -0.39186716, 6.537689e-08)
+
+[node name="handslot.l" type="BoneAttachment3D" parent="Rig_Medium/Skeleton3D"]
+bone_name = "handslot.l"
+
+[node name="handslot.r" type="BoneAttachment3D" parent="Rig_Medium/Skeleton3D"]
+bone_name = "handslot.r"
+
+[node name="Grip" type="Node3D" parent="Rig_Medium/Skeleton3D/handslot.l"]
+
+[node name="Grip" type="Node3D" parent="Rig_Medium/Skeleton3D/handslot.r"]
+rotation_degrees = Vector3(0, 180, 0)
+
+[node name="CharacterAnimator" parent="." index="1" instance=ExtResource("2_k116q")]

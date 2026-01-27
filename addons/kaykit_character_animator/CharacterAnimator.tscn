@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://c0y5405ncvgdn"]
+
+[ext_resource type="AnimationLibrary" uid="uid://w7m0cxjed2df" path="res://addons/kaykit_character_animator/RigMedium_Animations.tres" id="1_lib"]
+
+[node name="CharacterAnimator" type="AnimationPlayer"]
+libraries = {
+&"": ExtResource("1_lib")
+}

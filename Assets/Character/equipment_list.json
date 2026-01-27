@@ -1,0 +1,180 @@
+{
+  "items": [
+    {
+      "name": "arrow_bow",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/arrow_bow.gltf"
+    },
+    {
+      "name": "arrow_bow_bundle",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/arrow_bow_bundle.gltf"
+    },
+    {
+      "name": "arrow_crossbow",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/arrow_crossbow.gltf"
+    },
+    {
+      "name": "arrow_crossbow_bundle",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/arrow_crossbow_bundle.gltf"
+    },
+    {
+      "name": "axe_1handed",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/axe_1handed.gltf"
+    },
+    {
+      "name": "axe_2handed",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/axe_2handed.gltf"
+    },
+    {
+      "name": "bow",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/bow.gltf"
+    },
+    {
+      "name": "bow_withString",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/bow_withString.gltf"
+    },
+    {
+      "name": "crossbow_1handed",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/crossbow_1handed.gltf"
+    },
+    {
+      "name": "crossbow_2handed",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/crossbow_2handed.gltf"
+    },
+    {
+      "name": "dagger",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/dagger.gltf"
+    },
+    {
+      "name": "mug_empty",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/mug_empty.gltf"
+    },
+    {
+      "name": "mug_full",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/mug_full.gltf"
+    },
+    {
+      "name": "quiver",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/quiver.gltf"
+    },
+    {
+      "name": "shield_badge",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/shield_badge.gltf"
+    },
+    {
+      "name": "shield_badge_color",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/shield_badge_color.gltf"
+    },
+    {
+      "name": "shield_round",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/shield_round.gltf"
+    },
+    {
+      "name": "shield_round_barbarian",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/shield_round_barbarian.gltf"
+    },
+    {
+      "name": "shield_round_color",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/shield_round_color.gltf"
+    },
+    {
+      "name": "shield_spikes",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/shield_spikes.gltf"
+    },
+    {
+      "name": "shield_spikes_color",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/shield_spikes_color.gltf"
+    },
+    {
+      "name": "shield_square",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/shield_square.gltf"
+    },
+    {
+      "name": "shield_square_color",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/shield_square_color.gltf"
+    },
+    {
+      "name": "smokebomb",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/smokebomb.gltf"
+    },
+    {
+      "name": "spellbook_closed",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/spellbook_closed.gltf"
+    },
+    {
+      "name": "spellbook_open",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/spellbook_open.gltf"
+    },
+    {
+      "name": "staff",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/staff.gltf"
+    },
+    {
+      "name": "sword_1handed",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/sword_1handed.gltf"
+    },
+    {
+      "name": "sword_2handed",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/sword_2handed.gltf"
+    },
+    {
+      "name": "sword_2handed_color",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/sword_2handed_color.gltf"
+    },
+    {
+      "name": "wand",
+      "path": "res://Assets/Character/Adventurers/Assets/gltf/wand.gltf"
+    },
+    {
+      "name": "Skeleton_Arrow",
+      "path": "res://Assets/Character/Skeletons/assets/gltf/Skeleton_Arrow.gltf"
+    },
+    {
+      "name": "Skeleton_Arrow_Broken",
+      "path": "res://Assets/Character/Skeletons/assets/gltf/Skeleton_Arrow_Broken.gltf"
+    },
+    {
+      "name": "Skeleton_Arrow_Broken_Half",
+      "path": "res://Assets/Character/Skeletons/assets/gltf/Skeleton_Arrow_Broken_Half.gltf"
+    },
+    {
+      "name": "Skeleton_Arrow_Half",
+      "path": "res://Assets/Character/Skeletons/assets/gltf/Skeleton_Arrow_Half.gltf"
+    },
+    {
+      "name": "Skeleton_Axe",
+      "path": "res://Assets/Character/Skeletons/assets/gltf/Skeleton_Axe.gltf"
+    },
+    {
+      "name": "Skeleton_Blade",
+      "path": "res://Assets/Character/Skeletons/assets/gltf/Skeleton_Blade.gltf"
+    },
+    {
+      "name": "Skeleton_Crossbow",
+      "path": "res://Assets/Character/Skeletons/assets/gltf/Skeleton_Crossbow.gltf"
+    },
+    {
+      "name": "Skeleton_Quiver",
+      "path": "res://Assets/Character/Skeletons/assets/gltf/Skeleton_Quiver.gltf"
+    },
+    {
+      "name": "Skeleton_Shield_Large_A",
+      "path": "res://Assets/Character/Skeletons/assets/gltf/Skeleton_Shield_Large_A.gltf"
+    },
+    {
+      "name": "Skeleton_Shield_Large_B",
+      "path": "res://Assets/Character/Skeletons/assets/gltf/Skeleton_Shield_Large_B.gltf"
+    },
+    {
+      "name": "Skeleton_Shield_Small_A",
+      "path": "res://Assets/Character/Skeletons/assets/gltf/Skeleton_Shield_Small_A.gltf"
+    },
+    {
+      "name": "Skeleton_Shield_Small_B",
+      "path": "res://Assets/Character/Skeletons/assets/gltf/Skeleton_Shield_Small_B.gltf"
+    },
+    {
+      "name": "Skeleton_Staff",
+      "path": "res://Assets/Character/Skeletons/assets/gltf/Skeleton_Staff.gltf"
+    }
+  ]
+}
