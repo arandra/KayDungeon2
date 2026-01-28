@@ -1,0 +1,58 @@
+[gd_scene load_steps=7 format=4]
+
+[ext_resource type="PackedScene" path="res://Scenes/Dungeon/DungeonGenerator.tscn" id="1"]
+[ext_resource type="Script" path="res://Scripts/Tile/TileBoard.cs" id="2"]
+[ext_resource type="PackedScene" path="res://Scenes/Tile/CommandPanel.tscn" id="3"]
+[ext_resource type="Script" path="res://Scripts/Camera/SimpleCameraController.cs" id="4"]
+[ext_resource type="PackedScene" path="res://Assets/Character/Knight.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://Assets/Character/Rogue.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://Assets/Character/Mage.tscn" id="7"]
+
+[node name="TileSample" type="Node3D"]
+
+[node name="Dungeon" parent="." instance=ExtResource("1")]
+editable_children = true
+RandomSeed = false
+Seed = 1
+RoomCount = 6
+GridSize = Vector2i(20, 20)
+RegenerateOnReady = true
+
+[node name="Barbarian" parent="Dungeon"]
+visible = false
+
+[node name="Units" type="Node3D" parent="."]
+
+[node name="Knight" parent="Units" instance=ExtResource("5")]
+TilePosition = Vector2i(3, 3)
+
+[node name="Rogue" parent="Units" instance=ExtResource("6")]
+TilePosition = Vector2i(7, 3)
+
+[node name="Mage" parent="Units" instance=ExtResource("7")]
+TilePosition = Vector2i(3, 7)
+
+[node name="TileBoard" type="Node3D" parent="."]
+script = ExtResource("2")
+DungeonPath = NodePath("../Dungeon")
+UnitsRootPath = NodePath("../Units")
+CommandPanelPath = NodePath("../CanvasLayer/CommandPanel")
+TilesPerFloorCell = 1
+OverlayHeight = 0.06
+AttackRadius = 2
+
+[node name="CameraRig" type="Node3D" parent="."]
+position = Vector3(40, 40, 40)
+rotation_degrees = Vector3(-45, 45, 0)
+script = ExtResource("4")
+
+[node name="Camera3D" type="Camera3D" parent="CameraRig"]
+current = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-60, -30, 0)
+light_energy = 2.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="CommandPanel" parent="CanvasLayer" instance=ExtResource("3")]

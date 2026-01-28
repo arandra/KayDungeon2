@@ -602,7 +602,7 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_6ijb1")
 
-[sub_resource type="MeshLibrary" id="MeshLibrary_if30b"]
+[sub_resource type="MeshLibrary" id="MeshLibrary_v0fvh"]
 item/0/name = "floor_tile_large"
 item/0/mesh = SubResource("ArrayMesh_3f564")
 item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -723,9 +723,10 @@ GridSize = Vector2i(30, 30)
 RegenerateOnReady = false
 EnableWallDecor = true
 DebugDumpEnabled = true
+WallGridOffset = Vector3(0, 0, 0)
 
 [node name="GridMap" type="GridMap" parent="."]
-mesh_library = SubResource("MeshLibrary_if30b")
+mesh_library = SubResource("MeshLibrary_v0fvh")
 cell_size = Vector3(4, 4, 4)
 cell_center_x = false
 cell_center_y = false
@@ -737,7 +738,7 @@ metadata/_editor_floor_ = Vector3(0, 1, 0)
 
 [node name="WallGridMap" type="GridMap" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1)
-mesh_library = SubResource("MeshLibrary_if30b")
+mesh_library = SubResource("MeshLibrary_v0fvh")
 cell_center_x = false
 cell_center_y = false
 cell_center_z = false
