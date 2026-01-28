@@ -2,7 +2,9 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using HttpClient = System.Net.Http.HttpClient;
 using System.Net.Http;
+using GdFileAccess = Godot.FileAccess;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
@@ -17,7 +19,7 @@ public static class SheetSyncService
     {
         try
         {
-            if (!FileAccess.FileExists(ConfigPath))
+            if (!GdFileAccess.FileExists(ConfigPath))
             {
                 message = $"SheetSyncService: Config not found: {ConfigPath}";
                 return false;
@@ -88,7 +90,7 @@ public static class SheetSyncService
 
     private static SheetConfig LoadConfig(string path)
     {
-        using var file = FileAccess.Open(path, FileAccess.ModeFlags.Read);
+        using var file = GdFileAccess.Open(path, GdFileAccess.ModeFlags.Read);
         var json = file.GetAsText();
         return JsonSerializer.Deserialize<SheetConfig>(json);
     }

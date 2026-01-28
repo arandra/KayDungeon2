@@ -630,44 +630,60 @@ public partial class TileBoard : Node3D
     {
         var reachable = new HashSet<Vector2I>();
         cameFrom = new Dictionary<Vector2I, Vector2I>();
-        var frontier = new Queue<(Vector2I pos, int cost)>();
+        var frontier = new List<(Vector2I pos, float cost)>();
+        var costSoFar = new Dictionary<Vector2I, float>();
 
         var start = ClampAnchor(unit.TilePosition, unit.Size);
-        frontier.Enqueue((start, 0));
+        frontier.Add((start, 0f));
+        costSoFar[start] = 0f;
         reachable.Add(start);
 
-        var directions = new Vector2I[]
+        var directions = new (Vector2I dir, float cost)[]
         {
-            new(-1, 0),
-            new(1, 0),
-            new(0, -1),
-            new(0, 1)
+            (new Vector2I(-1, 0), 1f),
+            (new Vector2I(1, 0), 1f),
+            (new Vector2I(0, -1), 1f),
+            (new Vector2I(0, 1), 1f),
+            (new Vector2I(-1, -1), 1.5f),
+            (new Vector2I(1, -1), 1.5f),
+            (new Vector2I(-1, 1), 1.5f),
+            (new Vector2I(1, 1), 1.5f)
         };
 
         while (frontier.Count > 0)
         {
-            var (pos, cost) = frontier.Dequeue();
-            if (cost >= unit.MovePoints)
+            frontier.Sort((a, b) => a.cost.CompareTo(b.cost));
+            var current = frontier[0];
+            frontier.RemoveAt(0);
+
+            if (current.cost > unit.MovePoints)
             {
                 continue;
             }
 
-            foreach (var dir in directions)
+            foreach (var entry in directions)
             {
-                var next = pos + dir;
-                if (reachable.Contains(next))
-                {
-                    continue;
-                }
-
+                var next = current.pos + entry.dir;
                 if (!IsAnchorValid(next, unit))
                 {
                     continue;
                 }
 
+                var nextCost = current.cost + entry.cost;
+                if (nextCost > unit.MovePoints)
+                {
+                    continue;
+                }
+
+                if (costSoFar.TryGetValue(next, out var knownCost) && knownCost <= nextCost)
+                {
+                    continue;
+                }
+
+                costSoFar[next] = nextCost;
                 reachable.Add(next);
-                cameFrom[next] = pos;
-                frontier.Enqueue((next, cost + 1));
+                cameFrom[next] = current.pos;
+                frontier.Add((next, nextCost));
             }
         }
 

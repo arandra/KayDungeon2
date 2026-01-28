@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using GdFileAccess = Godot.FileAccess;
 
 public static class LocalDataRegistry
 {
@@ -41,7 +42,7 @@ public static class LocalDataRegistry
             var path = $"{DataFolder}/{file}";
             try
             {
-                using var dataFile = FileAccess.Open(path, FileAccess.ModeFlags.Read);
+                using var dataFile = GdFileAccess.Open(path, GdFileAccess.ModeFlags.Read);
                 var json = dataFile.GetAsText();
                 var table = JsonSerializer.Deserialize<SheetTable>(json);
                 if (table == null)
