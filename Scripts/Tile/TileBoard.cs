@@ -6,11 +6,20 @@ public partial class TileBoard : Node3D
     [Export] public NodePath DungeonPath;
     [Export] public NodePath UnitsRootPath;
     [Export] public NodePath CommandPanelPath;
-    [Export] public int TilesPerFloorCell = 1;
+    [Export] public int TilesPerFloorCell = 4;
+    [Export] public Vector2I DefaultSelectionSize = new(2, 2);
     [Export] public float OverlayHeight = 0.05f;
     [Export] public float SelectionHeightOffset = 0.02f;
+    [Export] public float MoveSecondsPerTile = 0.2f;
     [Export] public int AttackRadius = 2;
     [Export] public bool ShowBaseGrid = true;
+
+    private enum ControlMode
+    {
+        SelectTile,
+        CommandSelect,
+        MoveTarget
+    }
 
     private DungeonGenerator _dungeon;
     private GridMap _gridMap;
@@ -25,11 +34,18 @@ public partial class TileBoard : Node3D
     private UnitActor _selectedUnit;
     private bool _showMoveRange;
     private bool _showAttackPreview;
+    private ControlMode _mode = ControlMode.SelectTile;
+    private int _commandIndex;
+    private bool _isMoving;
+    private Vector2I _selectionSize = new(1, 1);
+    private HashSet<Vector2I> _reachableAnchors = new();
+    private Dictionary<Vector2I, Vector2I> _pathParents = new();
 
     private MultiMeshInstance3D _baseOverlay;
     private MultiMeshInstance3D _moveOverlay;
     private MultiMeshInstance3D _attackOverlay;
     private MeshInstance3D _selectionOverlay;
+    private MeshInstance3D _pathLine;
 
     private readonly List<UnitActor> _units = new();
     private readonly Dictionary<Vector2I, UnitActor> _occupancy = new();
@@ -49,30 +65,90 @@ public partial class TileBoard : Node3D
         switch (key.Keycode)
         {
             case Key.Left:
-                MoveSelection(new Vector2I(-1, 0));
+                HandleDirectionalInput(new Vector2I(-1, 0));
                 break;
             case Key.Right:
-                MoveSelection(new Vector2I(1, 0));
+                HandleDirectionalInput(new Vector2I(1, 0));
                 break;
             case Key.Up:
-                MoveSelection(new Vector2I(0, -1));
+                HandleDirectionalInput(new Vector2I(0, -1));
                 break;
             case Key.Down:
-                MoveSelection(new Vector2I(0, 1));
+                HandleDirectionalInput(new Vector2I(0, 1));
                 break;
             case Key.Space:
-                TrySelectUnit();
+                HandleConfirm();
                 break;
             case Key.Escape:
-                ClearSelection();
-                break;
-            case Key.M:
-                ShowMoveRange();
+                HandleCancel();
                 break;
             case Key.X:
                 ToggleAttackPreview();
                 break;
         }
+    }
+
+    private void HandleDirectionalInput(Vector2I delta)
+    {
+        if (_isMoving)
+        {
+            return;
+        }
+
+        if (_mode == ControlMode.CommandSelect)
+        {
+            CycleCommandSelection(delta);
+            return;
+        }
+
+        MoveSelection(delta);
+    }
+
+    private void HandleConfirm()
+    {
+        if (_isMoving)
+        {
+            return;
+        }
+
+        if (_mode == ControlMode.SelectTile)
+        {
+            TrySelectUnit();
+            return;
+        }
+
+        if (_mode == ControlMode.CommandSelect)
+        {
+            ConfirmCommandSelection();
+            return;
+        }
+
+        if (_mode == ControlMode.MoveTarget)
+        {
+            ConfirmMoveTarget();
+        }
+    }
+
+    private void HandleCancel()
+    {
+        if (_isMoving)
+        {
+            return;
+        }
+
+        if (_mode == ControlMode.MoveTarget)
+        {
+            CancelMoveCommand();
+            return;
+        }
+
+        if (_mode == ControlMode.CommandSelect)
+        {
+            DeselectUnit();
+            return;
+        }
+
+        DeselectUnit();
     }
 
     private void Initialize()
@@ -92,7 +168,7 @@ public partial class TileBoard : Node3D
         {
             _commandPanel.MovePressed += OnMovePressed;
             _commandPanel.SkillPressed += OnSkillPressed;
-            _commandPanel.SetSkillEnabled(false);
+            _commandPanel.SetSkillEnabled(true);
             _commandPanel.ShowFor(null);
         }
 
@@ -105,6 +181,7 @@ public partial class TileBoard : Node3D
         RefreshUnits();
 
         _selectedTile = GetInitialSelection();
+        _mode = ControlMode.SelectTile;
         UpdateSelectionVisual();
     }
 
@@ -114,6 +191,7 @@ public partial class TileBoard : Node3D
         _moveOverlay = CreateOverlay("MoveOverlay", new Color(0.2f, 0.6f, 1.0f, 0.35f));
         _attackOverlay = CreateOverlay("AttackOverlay", new Color(1.0f, 0.2f, 0.2f, 0.35f));
         _selectionOverlay = CreateSelectionOverlay("SelectionOverlay", new Color(1.0f, 1.0f, 0.2f, 0.5f));
+        _pathLine = CreatePathLine("MovePathLine", new Color(1.0f, 0.9f, 0.2f, 1.0f));
 
         if (_baseOverlay != null)
         {
@@ -129,6 +207,11 @@ public partial class TileBoard : Node3D
         if (_attackOverlay != null)
         {
             _attackOverlay.Visible = false;
+        }
+
+        if (_pathLine != null)
+        {
+            _pathLine.Visible = false;
         }
     }
 
@@ -151,10 +234,75 @@ public partial class TileBoard : Node3D
             }
 
             _units.Add(unit);
-            SnapUnitToGrid(unit);
         }
 
-        RebuildOccupancy();
+        PlaceUnitsOnFloor();
+    }
+
+    private void PlaceUnitsOnFloor()
+    {
+        _occupancy.Clear();
+
+        foreach (var unit in _units)
+        {
+            var start = ClampAnchor(unit.TilePosition, unit.Size);
+            var anchor = FindNearestValidAnchor(unit, start);
+            unit.TilePosition = anchor;
+            SnapUnitToGrid(unit);
+
+            foreach (var tile in unit.GetFootprintTiles(anchor))
+            {
+                if (IsWithinGrid(tile))
+                {
+                    _occupancy[tile] = unit;
+                }
+            }
+        }
+    }
+
+    private Vector2I FindNearestValidAnchor(UnitActor unit, Vector2I start)
+    {
+        var startAnchor = ClampAnchor(start, unit.Size);
+        if (IsAnchorValid(startAnchor, unit))
+        {
+            return startAnchor;
+        }
+
+        var visited = new HashSet<Vector2I>();
+        var queue = new Queue<Vector2I>();
+        queue.Enqueue(startAnchor);
+        visited.Add(startAnchor);
+
+        var directions = new Vector2I[]
+        {
+            new(-1, 0),
+            new(1, 0),
+            new(0, -1),
+            new(0, 1)
+        };
+
+        while (queue.Count > 0)
+        {
+            var anchor = queue.Dequeue();
+            foreach (var dir in directions)
+            {
+                var next = anchor + dir;
+                if (!IsAnchorWithinGrid(next, unit.Size) || visited.Contains(next))
+                {
+                    continue;
+                }
+
+                if (IsAnchorValid(next, unit))
+                {
+                    return next;
+                }
+
+                visited.Add(next);
+                queue.Enqueue(next);
+            }
+        }
+
+        return startAnchor;
     }
 
     private void RebuildOccupancy()
@@ -177,16 +325,17 @@ public partial class TileBoard : Node3D
     {
         if (_units.Count > 0)
         {
-            return ClampToGrid(_units[0].TilePosition);
+            return ClampSelectionAnchor(_units[0].TilePosition, _units[0].Size);
         }
 
-        return ClampToGrid(new Vector2I(_gridSize.X / 2, _gridSize.Y / 2));
+        return ClampSelectionAnchor(new Vector2I(_gridSize.X / 2, _gridSize.Y / 2), DefaultSelectionSize);
     }
 
     private void MoveSelection(Vector2I delta)
     {
-        _selectedTile = ClampToGrid(_selectedTile + delta);
+        _selectedTile = ClampSelectionAnchor(_selectedTile + delta, GetSelectionSize());
         UpdateSelectionVisual();
+        UpdatePathLine();
         UpdateAttackOverlay();
     }
 
@@ -197,27 +346,52 @@ public partial class TileBoard : Node3D
             return;
         }
 
+        var size = GetSelectionSize();
+        if (size.X <= 0 || size.Y <= 0)
+        {
+            return;
+        }
+
+        if (size != _selectionSize)
+        {
+            _selectionSize = size;
+            _selectionOverlay.Scale = new Vector3(size.X, 1.0f, size.Y);
+        }
+
         _selectionOverlay.Visible = true;
-        _selectionOverlay.GlobalPosition = TileToWorld(_selectedTile, OverlayHeight + SelectionHeightOffset);
+        var center = AnchorToWorld(_selectedTile, size);
+        _selectionOverlay.GlobalPosition = new Vector3(center.X, _origin.Y + OverlayHeight + SelectionHeightOffset, center.Z);
     }
 
     private void TrySelectUnit()
     {
+        if (_mode != ControlMode.SelectTile)
+        {
+            return;
+        }
+
         if (_occupancy.TryGetValue(_selectedTile, out var unit))
         {
             _selectedUnit = unit;
+            _selectedTile = ClampSelectionAnchor(unit.TilePosition, unit.Size);
+            _mode = ControlMode.CommandSelect;
+            _commandIndex = 0;
             if (_commandPanel != null)
             {
                 _commandPanel.ShowFor(unit);
+                _commandPanel.SetSelection(_commandIndex);
             }
+            UpdateSelectionVisual();
         }
     }
 
-    private void ClearSelection()
+    private void DeselectUnit()
     {
         _selectedUnit = null;
         _showMoveRange = false;
         _showAttackPreview = false;
+        _mode = ControlMode.SelectTile;
+        _commandIndex = 0;
 
         if (_commandPanel != null)
         {
@@ -233,17 +407,34 @@ public partial class TileBoard : Node3D
         {
             _attackOverlay.Visible = false;
         }
-    }
 
-    private void ShowMoveRange()
-    {
-        if (_selectedUnit == null || _moveOverlay == null)
+        if (_pathLine != null)
         {
-            return;
+            _pathLine.Visible = false;
         }
 
-        _showMoveRange = true;
-        UpdateMoveOverlay();
+        _selectedTile = ClampSelectionAnchor(_selectedTile, DefaultSelectionSize);
+        UpdateSelectionVisual();
+    }
+
+    private void CancelMoveCommand()
+    {
+        _showMoveRange = false;
+        _mode = ControlMode.CommandSelect;
+
+        if (_moveOverlay != null)
+        {
+            _moveOverlay.Visible = false;
+        }
+        if (_pathLine != null)
+        {
+            _pathLine.Visible = false;
+        }
+        UpdateSelectionVisual();
+        if (_commandPanel != null)
+        {
+            _commandPanel.SetSelection(_commandIndex);
+        }
     }
 
     private void ToggleAttackPreview()
@@ -259,12 +450,85 @@ public partial class TileBoard : Node3D
 
     private void OnMovePressed()
     {
-        ShowMoveRange();
+        EnterMoveMode();
     }
 
     private void OnSkillPressed()
     {
         GD.Print("TileBoard: Skill command is not implemented.");
+    }
+
+    private void CycleCommandSelection(Vector2I delta)
+    {
+        if (_commandPanel == null)
+        {
+            return;
+        }
+
+        var step = delta.X + delta.Y;
+        if (step == 0)
+        {
+            return;
+        }
+
+        var commandCount = 2;
+        var direction = step > 0 ? 1 : -1;
+        _commandIndex = (_commandIndex + direction + commandCount) % commandCount;
+        _commandPanel.SetSelection(_commandIndex);
+    }
+
+    private void ConfirmCommandSelection()
+    {
+        if (_selectedUnit == null)
+        {
+            return;
+        }
+
+        if (_commandIndex == 0)
+        {
+            EnterMoveMode();
+        }
+        else
+        {
+            OnSkillPressed();
+        }
+    }
+
+    private void ConfirmMoveTarget()
+    {
+        if (_selectedUnit == null)
+        {
+            return;
+        }
+
+        if (!_reachableAnchors.Contains(_selectedTile))
+        {
+            return;
+        }
+
+        var path = BuildPath(_selectedTile);
+        if (path == null || path.Count == 0)
+        {
+            return;
+        }
+
+        MoveUnitAlongPath(_selectedUnit, path);
+    }
+
+    private void EnterMoveMode()
+    {
+        if (_selectedUnit == null)
+        {
+            return;
+        }
+
+        _showMoveRange = true;
+        _mode = ControlMode.MoveTarget;
+        _selectedTile = ClampSelectionAnchor(_selectedUnit.TilePosition, _selectedUnit.Size);
+        _reachableAnchors = ComputeReachableAnchors(_selectedUnit, out _pathParents);
+        UpdateSelectionVisual();
+        UpdateMoveOverlay();
+        UpdatePathLine();
     }
 
     private void UpdateMoveOverlay()
@@ -280,10 +544,9 @@ public partial class TileBoard : Node3D
             return;
         }
 
-        var reachableAnchors = ComputeReachableAnchors(_selectedUnit);
         var tiles = new HashSet<Vector2I>();
 
-        foreach (var anchor in reachableAnchors)
+        foreach (var anchor in _reachableAnchors)
         {
             foreach (var tile in _selectedUnit.GetFootprintTiles(anchor))
             {
@@ -334,9 +597,39 @@ public partial class TileBoard : Node3D
         _attackOverlay.Visible = true;
     }
 
-    private HashSet<Vector2I> ComputeReachableAnchors(UnitActor unit)
+    private void UpdatePathLine()
+    {
+        if (_pathLine == null)
+        {
+            return;
+        }
+
+        if (_mode != ControlMode.MoveTarget || !_showMoveRange || _selectedUnit == null)
+        {
+            _pathLine.Visible = false;
+            return;
+        }
+
+        if (!_reachableAnchors.Contains(_selectedTile))
+        {
+            _pathLine.Visible = false;
+            return;
+        }
+
+        var path = BuildPath(_selectedTile);
+        if (path == null || path.Count == 0)
+        {
+            _pathLine.Visible = false;
+            return;
+        }
+
+        DrawPathLine(path, _selectedUnit.Size);
+    }
+
+    private HashSet<Vector2I> ComputeReachableAnchors(UnitActor unit, out Dictionary<Vector2I, Vector2I> cameFrom)
     {
         var reachable = new HashSet<Vector2I>();
+        cameFrom = new Dictionary<Vector2I, Vector2I>();
         var frontier = new Queue<(Vector2I pos, int cost)>();
 
         var start = ClampAnchor(unit.TilePosition, unit.Size);
@@ -373,11 +666,120 @@ public partial class TileBoard : Node3D
                 }
 
                 reachable.Add(next);
+                cameFrom[next] = pos;
                 frontier.Enqueue((next, cost + 1));
             }
         }
 
         return reachable;
+    }
+
+    private List<Vector2I> BuildPath(Vector2I target)
+    {
+        if (_selectedUnit == null)
+        {
+            return null;
+        }
+
+        var path = new List<Vector2I>();
+        var current = target;
+        path.Add(current);
+
+        while (_pathParents.TryGetValue(current, out var prev))
+        {
+            current = prev;
+            path.Add(current);
+        }
+
+        path.Reverse();
+        return path;
+    }
+
+    private void DrawPathLine(List<Vector2I> path, Vector2I size)
+    {
+        if (_pathLine == null)
+        {
+            return;
+        }
+
+        var mesh = _pathLine.Mesh as ImmediateMesh;
+        if (mesh == null)
+        {
+            mesh = new ImmediateMesh();
+            _pathLine.Mesh = mesh;
+        }
+
+        mesh.ClearSurfaces();
+        mesh.SurfaceBegin(Mesh.PrimitiveType.LineStrip);
+        foreach (var anchor in path)
+        {
+            var center = AnchorToWorld(anchor, size);
+            var point = new Vector3(center.X, _origin.Y + OverlayHeight + 0.08f, center.Z);
+            mesh.SurfaceAddVertex(point);
+        }
+        mesh.SurfaceEnd();
+        _pathLine.Visible = true;
+    }
+
+    private async void MoveUnitAlongPath(UnitActor unit, List<Vector2I> path)
+    {
+        if (path == null || path.Count == 0)
+        {
+            return;
+        }
+
+        _isMoving = true;
+        _showMoveRange = false;
+        _mode = ControlMode.CommandSelect;
+
+        if (_moveOverlay != null)
+        {
+            _moveOverlay.Visible = false;
+        }
+        if (_pathLine != null)
+        {
+            _pathLine.Visible = false;
+        }
+
+        if (path.Count == 1)
+        {
+            unit.TilePosition = path[0];
+            SnapUnitToGrid(unit);
+            RebuildOccupancy();
+            unit.PlayIdle();
+            UpdateSelectionAfterMove(unit);
+            _isMoving = false;
+            return;
+        }
+
+        unit.PlayMove();
+        var tween = CreateTween();
+        tween.SetTrans(Tween.TransitionType.Sine);
+        tween.SetEase(Tween.EaseType.InOut);
+
+        for (int i = 1; i < path.Count; i++)
+        {
+            var center = AnchorToWorld(path[i], unit.Size);
+            var target = new Vector3(center.X, _origin.Y, center.Z);
+            tween.TweenProperty(unit, "global_position", target, MoveSecondsPerTile);
+        }
+
+        await ToSignal(tween, Tween.SignalName.Finished);
+        unit.TilePosition = path[^1];
+        RebuildOccupancy();
+        unit.PlayIdle();
+        UpdateSelectionAfterMove(unit);
+        _isMoving = false;
+    }
+
+    private void UpdateSelectionAfterMove(UnitActor unit)
+    {
+        _selectedTile = ClampSelectionAnchor(unit.TilePosition, unit.Size);
+        UpdateSelectionVisual();
+        if (_commandPanel != null)
+        {
+            _commandPanel.SetSelection(_commandIndex);
+        }
     }
 
     private bool IsAnchorValid(Vector2I anchor, UnitActor unit)
@@ -390,6 +792,11 @@ public partial class TileBoard : Node3D
         foreach (var tile in unit.GetFootprintTiles(anchor))
         {
             if (_occupancy.TryGetValue(tile, out var occupant) && occupant != unit)
+            {
+                return false;
+            }
+
+            if (!IsTileOnFloor(tile))
             {
                 return false;
             }
@@ -410,11 +817,42 @@ public partial class TileBoard : Node3D
         return tile.X >= 0 && tile.Y >= 0 && tile.X < _gridSize.X && tile.Y < _gridSize.Y;
     }
 
-    private Vector2I ClampToGrid(Vector2I tile)
+    private Vector2I GetSelectionSize()
     {
-        return new Vector2I(
-            Mathf.Clamp(tile.X, 0, _gridSize.X - 1),
-            Mathf.Clamp(tile.Y, 0, _gridSize.Y - 1));
+        var size = _selectedUnit != null && _mode != ControlMode.SelectTile ? _selectedUnit.Size : DefaultSelectionSize;
+        if (size.X <= 0 || size.Y <= 0)
+        {
+            return new Vector2I(1, 1);
+        }
+
+        return size;
+    }
+
+    private Vector2I ClampSelectionAnchor(Vector2I anchor, Vector2I size)
+    {
+        return ClampAnchor(anchor, size);
+    }
+
+    private bool IsTileOnFloor(Vector2I tile)
+    {
+        if (_gridMap == null)
+        {
+            return true;
+        }
+
+        if (!IsWithinGrid(tile))
+        {
+            return false;
+        }
+
+        var cellX = tile.X / Mathf.Max(1, TilesPerFloorCell);
+        var cellY = tile.Y / Mathf.Max(1, TilesPerFloorCell);
+        if (cellX < 0 || cellY < 0 || cellX >= _dungeon.GridSize.X || cellY >= _dungeon.GridSize.Y)
+        {
+            return false;
+        }
+
+        return _gridMap.GetCellItem(new Vector3I(cellX, 0, cellY)) != -1;
     }
 
     private Vector2I ClampAnchor(Vector2I anchor, Vector2I size)
@@ -498,6 +936,26 @@ public partial class TileBoard : Node3D
         {
             Name = name,
             Mesh = mesh,
+            MaterialOverride = material
+        };
+
+        AddChild(instance);
+        return instance;
+    }
+
+    private MeshInstance3D CreatePathLine(string name, Color color)
+    {
+        var material = new StandardMaterial3D
+        {
+            AlbedoColor = color,
+            ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
+            CullMode = BaseMaterial3D.CullModeEnum.Disabled
+        };
+
+        var instance = new MeshInstance3D
+        {
+            Name = name,
+            Mesh = new ImmediateMesh(),
             MaterialOverride = material
         };
 

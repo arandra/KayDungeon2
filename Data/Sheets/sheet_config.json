@@ -1,0 +1,30 @@
+{
+  "spreadsheetId": "YOUR_SPREADSHEET_ID",
+  "sheets": [
+    {
+      "name": "characters",
+      "range": "캐릭터 스탯!A1:Z",
+      "output": "characters.json"
+    },
+    {
+      "name": "skills",
+      "range": "스킬!A1:Z",
+      "output": "skills.json"
+    },
+    {
+      "name": "weapons",
+      "range": "무기!A1:Z",
+      "output": "weapons.json"
+    },
+    {
+      "name": "armors",
+      "range": "장비(방어구)!A1:Z",
+      "output": "armors.json"
+    },
+    {
+      "name": "items",
+      "range": "아이템!A1:Z",
+      "output": "items.json"
+    }
+  ]
+}

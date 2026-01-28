@@ -37,7 +37,8 @@ script = ExtResource("2")
 DungeonPath = NodePath("../Dungeon")
 UnitsRootPath = NodePath("../Units")
 CommandPanelPath = NodePath("../CanvasLayer/CommandPanel")
-TilesPerFloorCell = 1
+TilesPerFloorCell = 4
+DefaultSelectionSize = Vector2i(2, 2)
 OverlayHeight = 0.06
 AttackRadius = 2
 
