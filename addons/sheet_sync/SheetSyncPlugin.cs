@@ -7,9 +7,9 @@ public partial class SheetSyncPlugin : EditorPlugin
 
     public override void _EnterTree()
     {
-        AddToolMenuItem("Sheets/Sync Google Sheets", Callable.From(SyncSheets));
-        AddToolMenuItem("Sheets/Set Service Account Key Path", Callable.From(OpenServiceAccountDialog));
-        AddToolMenuItem("Sheets/Reload Local Data", Callable.From(ReloadLocalData));
+        AddToolMenuItem("Sheets/Sync Google Sheets", new Callable(this, nameof(SyncSheets)));
+        AddToolMenuItem("Sheets/Set Service Account Key Path", new Callable(this, nameof(OpenServiceAccountDialog)));
+        AddToolMenuItem("Sheets/Reload Local Data", new Callable(this, nameof(ReloadLocalData)));
 
         _fileDialog = new EditorFileDialog
         {
@@ -61,6 +61,7 @@ public partial class SheetSyncPlugin : EditorPlugin
     {
         if (LocalDataRegistry.LoadAll(out var message))
         {
+            SkillCatalog.LoadFromLocalData();
             GD.Print(message);
         }
         else

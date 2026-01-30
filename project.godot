@@ -21,7 +21,3 @@ project/assembly_name="KayDungeon2"
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/dungeon_editor/plugin.cfg", "res://addons/sheet_sync/plugin.cfg")
-
-[rendering]
-
-renderer/rendering_method="mobile"

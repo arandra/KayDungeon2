@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://Assets/Character/Knight.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://Assets/Character/Rogue.tscn" id="6"]
 [ext_resource type="PackedScene" path="res://Assets/Character/Mage.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://Assets/Character/Skeleton_Warrior.tscn" id="8"]
 
 [node name="TileSample" type="Node3D"]
 
@@ -31,6 +32,9 @@ TilePosition = Vector2i(7, 3)
 
 [node name="Mage" parent="Units" instance=ExtResource("7")]
 TilePosition = Vector2i(3, 7)
+
+[node name="EnemySkeleton" parent="Units" instance=ExtResource("8")]
+TilePosition = Vector2i(9, 6)
 
 [node name="TileBoard" type="Node3D" parent="."]
 script = ExtResource("2")

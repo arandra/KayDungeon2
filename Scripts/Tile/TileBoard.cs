@@ -18,7 +18,8 @@ public partial class TileBoard : Node3D
     {
         SelectTile,
         CommandSelect,
-        MoveTarget
+        MoveTarget,
+        SkillTarget
     }
 
     private DungeonGenerator _dungeon;
@@ -46,6 +47,10 @@ public partial class TileBoard : Node3D
     private MultiMeshInstance3D _attackOverlay;
     private MeshInstance3D _selectionOverlay;
     private MeshInstance3D _pathLine;
+    private MultiMeshInstance3D _skillOverlay;
+
+    private SkillData _selectedSkill;
+    private HashSet<Vector2I> _skillRangeAnchors = new();
 
     private readonly List<UnitActor> _units = new();
     private readonly Dictionary<Vector2I, UnitActor> _occupancy = new();
@@ -126,6 +131,12 @@ public partial class TileBoard : Node3D
         if (_mode == ControlMode.MoveTarget)
         {
             ConfirmMoveTarget();
+            return;
+        }
+
+        if (_mode == ControlMode.SkillTarget)
+        {
+            ConfirmSkillTarget();
         }
     }
 
@@ -133,6 +144,12 @@ public partial class TileBoard : Node3D
     {
         if (_isMoving)
         {
+            return;
+        }
+
+        if (_mode == ControlMode.SkillTarget)
+        {
+            CancelSkillTarget();
             return;
         }
 
@@ -192,6 +209,7 @@ public partial class TileBoard : Node3D
         _attackOverlay = CreateOverlay("AttackOverlay", new Color(1.0f, 0.2f, 0.2f, 0.35f));
         _selectionOverlay = CreateSelectionOverlay("SelectionOverlay", new Color(1.0f, 1.0f, 0.2f, 0.5f));
         _pathLine = CreatePathLine("MovePathLine", new Color(1.0f, 0.9f, 0.2f, 1.0f));
+        _skillOverlay = CreateOverlay("SkillOverlay", new Color(0.9f, 0.6f, 0.1f, 0.35f));
 
         if (_baseOverlay != null)
         {
@@ -212,6 +230,11 @@ public partial class TileBoard : Node3D
         if (_pathLine != null)
         {
             _pathLine.Visible = false;
+        }
+
+        if (_skillOverlay != null)
+        {
+            _skillOverlay.Visible = false;
         }
     }
 
@@ -237,6 +260,12 @@ public partial class TileBoard : Node3D
         }
 
         PlaceUnitsOnFloor();
+    }
+
+    public override void _EnterTree()
+    {
+        LocalDataRegistry.LoadAll(out _);
+        SkillCatalog.LoadFromLocalData();
     }
 
     private void PlaceUnitsOnFloor()
@@ -333,10 +362,20 @@ public partial class TileBoard : Node3D
 
     private void MoveSelection(Vector2I delta)
     {
-        _selectedTile = ClampSelectionAnchor(_selectedTile + delta, GetSelectionSize());
+        var candidate = ClampSelectionAnchor(_selectedTile + delta, GetSelectionSize());
+        if (_mode == ControlMode.SkillTarget && _skillRangeAnchors.Count > 0 && !_skillRangeAnchors.Contains(candidate))
+        {
+            return;
+        }
+
+        _selectedTile = candidate;
         UpdateSelectionVisual();
         UpdatePathLine();
-        UpdateAttackOverlay();
+        UpdateSkillAreaOverlay();
+        if (_mode != ControlMode.SkillTarget)
+        {
+            UpdateAttackOverlay();
+        }
     }
 
     private void UpdateSelectionVisual()
@@ -390,6 +429,8 @@ public partial class TileBoard : Node3D
         _selectedUnit = null;
         _showMoveRange = false;
         _showAttackPreview = false;
+        _selectedSkill = null;
+        _skillRangeAnchors.Clear();
         _mode = ControlMode.SelectTile;
         _commandIndex = 0;
 
@@ -411,6 +452,11 @@ public partial class TileBoard : Node3D
         if (_pathLine != null)
         {
             _pathLine.Visible = false;
+        }
+
+        if (_skillOverlay != null)
+        {
+            _skillOverlay.Visible = false;
         }
 
         _selectedTile = ClampSelectionAnchor(_selectedTile, DefaultSelectionSize);
@@ -437,6 +483,29 @@ public partial class TileBoard : Node3D
         }
     }
 
+    private void CancelSkillTarget()
+    {
+        _mode = ControlMode.CommandSelect;
+        _selectedSkill = null;
+        _skillRangeAnchors.Clear();
+
+        if (_skillOverlay != null)
+        {
+            _skillOverlay.Visible = false;
+        }
+        if (_attackOverlay != null)
+        {
+            _attackOverlay.Visible = false;
+        }
+
+        _selectedTile = ClampSelectionAnchor(_selectedUnit?.TilePosition ?? _selectedTile, DefaultSelectionSize);
+        UpdateSelectionVisual();
+        if (_commandPanel != null)
+        {
+            _commandPanel.SetSelection(_commandIndex);
+        }
+    }
+
     private void ToggleAttackPreview()
     {
         if (_attackOverlay == null)
@@ -455,7 +524,7 @@ public partial class TileBoard : Node3D
 
     private void OnSkillPressed()
     {
-        GD.Print("TileBoard: Skill command is not implemented.");
+        EnterSkillMode();
     }
 
     private void CycleCommandSelection(Vector2I delta)
@@ -490,7 +559,7 @@ public partial class TileBoard : Node3D
         }
         else
         {
-            OnSkillPressed();
+            EnterSkillMode();
         }
     }
 
@@ -515,6 +584,28 @@ public partial class TileBoard : Node3D
         MoveUnitAlongPath(_selectedUnit, path);
     }
 
+    private void ConfirmSkillTarget()
+    {
+        if (_selectedUnit == null || _selectedSkill == null)
+        {
+            return;
+        }
+
+        if (_skillRangeAnchors.Count > 0 && !_skillRangeAnchors.Contains(_selectedTile))
+        {
+            return;
+        }
+
+        var targets = GetSkillTargets(_selectedUnit, _selectedSkill, _selectedTile);
+        if (targets.Count == 0)
+        {
+            return;
+        }
+
+        ApplySkillToTargets(_selectedUnit, targets, _selectedSkill);
+        CancelSkillTarget();
+    }
+
     private void EnterMoveMode()
     {
         if (_selectedUnit == null)
@@ -529,6 +620,23 @@ public partial class TileBoard : Node3D
         UpdateSelectionVisual();
         UpdateMoveOverlay();
         UpdatePathLine();
+    }
+
+    private void EnterSkillMode()
+    {
+        if (_selectedUnit == null)
+        {
+            return;
+        }
+
+        _selectedSkill = SkillCatalog.GetDefaultSkill();
+        _mode = ControlMode.SkillTarget;
+        _showMoveRange = false;
+        _selectedTile = ClampSelectionAnchor(_selectedUnit.TilePosition, DefaultSelectionSize);
+        _skillRangeAnchors = ComputeSkillRangeAnchors(_selectedUnit, _selectedSkill);
+        UpdateSelectionVisual();
+        UpdateSkillRangeOverlay();
+        UpdateSkillAreaOverlay();
     }
 
     private void UpdateMoveOverlay()
@@ -568,6 +676,11 @@ public partial class TileBoard : Node3D
             return;
         }
 
+        if (_mode == ControlMode.SkillTarget)
+        {
+            return;
+        }
+
         if (!_showAttackPreview)
         {
             _attackOverlay.Visible = false;
@@ -593,6 +706,54 @@ public partial class TileBoard : Node3D
             }
         }
 
+        SetOverlayTiles(_attackOverlay, tiles);
+        _attackOverlay.Visible = true;
+    }
+
+    private void UpdateSkillRangeOverlay()
+    {
+        if (_skillOverlay == null)
+        {
+            return;
+        }
+
+        if (_mode != ControlMode.SkillTarget || _selectedSkill == null)
+        {
+            _skillOverlay.Visible = false;
+            return;
+        }
+
+        var tiles = new HashSet<Vector2I>();
+        var size = DefaultSelectionSize;
+        foreach (var anchor in _skillRangeAnchors)
+        {
+            foreach (var tile in GetFootprintTiles(anchor, size))
+            {
+                if (IsWithinGrid(tile))
+                {
+                    tiles.Add(tile);
+                }
+            }
+        }
+
+        SetOverlayTiles(_skillOverlay, tiles);
+        _skillOverlay.Visible = true;
+    }
+
+    private void UpdateSkillAreaOverlay()
+    {
+        if (_attackOverlay == null)
+        {
+            return;
+        }
+
+        if (_mode != ControlMode.SkillTarget || _selectedSkill == null)
+        {
+            _attackOverlay.Visible = false;
+            return;
+        }
+
+        var tiles = BuildSkillAreaTiles(_selectedTile, _selectedSkill);
         SetOverlayTiles(_attackOverlay, tiles);
         _attackOverlay.Visible = true;
     }
@@ -688,6 +849,197 @@ public partial class TileBoard : Node3D
         }
 
         return reachable;
+    }
+
+    private HashSet<Vector2I> ComputeSkillRangeAnchors(UnitActor caster, SkillData skill)
+    {
+        var anchors = new HashSet<Vector2I>();
+        if (caster == null || skill == null)
+        {
+            return anchors;
+        }
+
+        var maxCost = SkillRange.RangeFromStep(skill.RangeStep);
+        var start = ClampAnchor(caster.TilePosition, caster.Size);
+        var frontier = new List<(Vector2I pos, float cost)>();
+        var costSoFar = new Dictionary<Vector2I, float>();
+        frontier.Add((start, 0f));
+        costSoFar[start] = 0f;
+        anchors.Add(start);
+
+        var directions = new (Vector2I dir, float cost)[]
+        {
+            (new Vector2I(-1, 0), 1f),
+            (new Vector2I(1, 0), 1f),
+            (new Vector2I(0, -1), 1f),
+            (new Vector2I(0, 1), 1f),
+            (new Vector2I(-1, -1), 1.5f),
+            (new Vector2I(1, -1), 1.5f),
+            (new Vector2I(-1, 1), 1.5f),
+            (new Vector2I(1, 1), 1.5f)
+        };
+
+        while (frontier.Count > 0)
+        {
+            frontier.Sort((a, b) => a.cost.CompareTo(b.cost));
+            var current = frontier[0];
+            frontier.RemoveAt(0);
+
+            if (current.cost > maxCost)
+            {
+                continue;
+            }
+
+            foreach (var entry in directions)
+            {
+                var next = current.pos + entry.dir;
+                var nextCost = current.cost + entry.cost;
+                if (nextCost > maxCost)
+                {
+                    continue;
+                }
+
+                if (costSoFar.TryGetValue(next, out var knownCost) && knownCost <= nextCost)
+                {
+                    continue;
+                }
+
+                if (!IsAnchorWithinGrid(next, DefaultSelectionSize))
+                {
+                    continue;
+                }
+
+                if (!IsAreaOnFloor(next, DefaultSelectionSize))
+                {
+                    continue;
+                }
+
+                costSoFar[next] = nextCost;
+                anchors.Add(next);
+                frontier.Add((next, nextCost));
+            }
+        }
+
+        return anchors;
+    }
+
+    private HashSet<Vector2I> BuildSkillAreaTiles(Vector2I anchor, SkillData skill)
+    {
+        var tiles = new HashSet<Vector2I>();
+        if (skill == null)
+        {
+            return tiles;
+        }
+
+        if (skill.TargetShape == SkillTargetShape.Single)
+        {
+            foreach (var tile in GetFootprintTiles(anchor, DefaultSelectionSize))
+            {
+                if (IsWithinGrid(tile))
+                {
+                    tiles.Add(tile);
+                }
+            }
+            return tiles;
+        }
+
+        foreach (var (dx, dy) in SkillRange.CircleOffsets(skill.RadiusStep))
+        {
+            var areaAnchor = new Vector2I(anchor.X + dx, anchor.Y + dy);
+            foreach (var tile in GetFootprintTiles(areaAnchor, DefaultSelectionSize))
+            {
+                if (IsWithinGrid(tile))
+                {
+                    tiles.Add(tile);
+                }
+            }
+        }
+
+        return tiles;
+    }
+
+    private List<UnitActor> GetSkillTargets(UnitActor caster, SkillData skill, Vector2I targetAnchor)
+    {
+        var targets = new List<UnitActor>();
+        if (caster == null || skill == null)
+        {
+            return targets;
+        }
+
+        if (skill.TargetTeam == SkillTargetTeam.Self)
+        {
+            targets.Add(caster);
+            return targets;
+        }
+
+        if (skill.TargetShape == SkillTargetShape.Single)
+        {
+            var target = FindUnitAtAnchor(targetAnchor, DefaultSelectionSize);
+            if (target != null && IsValidTarget(caster, target, skill.TargetTeam))
+            {
+                targets.Add(target);
+            }
+            return targets;
+        }
+
+        var tiles = BuildSkillAreaTiles(targetAnchor, skill);
+        var seen = new HashSet<UnitActor>();
+        foreach (var tile in tiles)
+        {
+            if (_occupancy.TryGetValue(tile, out var unit) && seen.Add(unit))
+            {
+                if (IsValidTarget(caster, unit, skill.TargetTeam))
+                {
+                    targets.Add(unit);
+                }
+            }
+        }
+
+        return targets;
+    }
+
+    private void ApplySkillToTargets(UnitActor caster, List<UnitActor> targets, SkillData skill)
+    {
+        var attackerStats = caster.BuildStats();
+        caster.PlaySkill(skill.Animation);
+        foreach (var target in targets)
+        {
+            var defenderStats = target.BuildStats();
+            var beforeArmor = defenderStats.Armor;
+            var beforeHp = defenderStats.Hp;
+            var total = CombatResolver.ResolveSkill(attackerStats, defenderStats, skill);
+            target.ApplyStats(defenderStats);
+            GD.Print($"Skill {skill.Name} hit {target.Name}: total={total} armor {beforeArmor}->{defenderStats.Armor} hp {beforeHp}->{defenderStats.Hp}");
+        }
+    }
+
+    private UnitActor FindUnitAtAnchor(Vector2I anchor, Vector2I size)
+    {
+        foreach (var tile in GetFootprintTiles(anchor, size))
+        {
+            if (_occupancy.TryGetValue(tile, out var unit))
+            {
+                return unit;
+            }
+        }
+
+        return null;
+    }
+
+    private bool IsValidTarget(UnitActor caster, UnitActor target, SkillTargetTeam team)
+    {
+        if (caster == null || target == null)
+        {
+            return false;
+        }
+
+        return team switch
+        {
+            SkillTargetTeam.Friendly => caster.Team == target.Team,
+            SkillTargetTeam.Enemy => caster.Team != target.Team,
+            SkillTargetTeam.Self => caster == target,
+            _ => false
+        };
     }
 
     private List<Vector2I> BuildPath(Vector2I target)
@@ -835,7 +1187,15 @@ public partial class TileBoard : Node3D
 
     private Vector2I GetSelectionSize()
     {
-        var size = _selectedUnit != null && _mode != ControlMode.SelectTile ? _selectedUnit.Size : DefaultSelectionSize;
+        Vector2I size;
+        if (_mode == ControlMode.MoveTarget || _mode == ControlMode.CommandSelect)
+        {
+            size = _selectedUnit != null ? _selectedUnit.Size : DefaultSelectionSize;
+        }
+        else
+        {
+            size = DefaultSelectionSize;
+        }
         if (size.X <= 0 || size.Y <= 0)
         {
             return new Vector2I(1, 1);
@@ -847,6 +1207,17 @@ public partial class TileBoard : Node3D
     private Vector2I ClampSelectionAnchor(Vector2I anchor, Vector2I size)
     {
         return ClampAnchor(anchor, size);
+    }
+
+    private IEnumerable<Vector2I> GetFootprintTiles(Vector2I anchor, Vector2I size)
+    {
+        for (int x = 0; x < size.X; x++)
+        {
+            for (int y = 0; y < size.Y; y++)
+            {
+                yield return new Vector2I(anchor.X + x, anchor.Y + y);
+            }
+        }
     }
 
     private bool IsTileOnFloor(Vector2I tile)
@@ -869,6 +1240,19 @@ public partial class TileBoard : Node3D
         }
 
         return _gridMap.GetCellItem(new Vector3I(cellX, 0, cellY)) != -1;
+    }
+
+    private bool IsAreaOnFloor(Vector2I anchor, Vector2I size)
+    {
+        foreach (var tile in GetFootprintTiles(anchor, size))
+        {
+            if (!IsTileOnFloor(tile))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private Vector2I ClampAnchor(Vector2I anchor, Vector2I size)
